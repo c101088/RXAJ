@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "##This script is used for data preparation\n\n##The model parameter\nparameterName<-c(\"KC\",\"UM\",\"LM\",\"C\",\"WM\",\"B\",\"IM\",\"SM\",\"EX\",\"KG\",\"KI\",\"CI\",\"CG\",\"CS\",\"L\",\"KE\",\"XE\")\n\ndayParameterValue<-c(0.5,15,80,0.15,180,0.2,0.03,0,1.2,0,0,0,0,0,0,0,0)\nhourParameterValue<-c(0.5,15,80,0.15,180,0.2,0.03,0,1.2,0,0,0,0,0,0,0,0)\n\nmodelPapameter<-data.frame(dayParameterValue,hourParameterValue)\nrownames(modelPapameter)<-parameterName\n\n##The model time-control\n##The colname of floodInfo is the index number of each flood\ndayStart<-as.Date(\"2005-1-1\")\ndayEnd<-as.Date(\"2006-1-1\")\n\nfloodInfo<-data.frame(row.names = c(\"startTime\",\"endTime\"))\nfloodInfo[,1]<-c(\"2005-11-11 14:00\",\"2005-11-21 5:00\")\ncolnames(floodInfo)[1]<-115100\n\n##The basin Geographic information\n##The colname of basinInfo is the station code of each sub-basin\nbasinInfo<-data.frame(row.names = c(\"sub-basin\",\"sub-river\"))\nbasinInfo[,1]<-c(1,1)\ncolnames(basinInfo)[1]<-454544\n\n\n\nlibrary(RODBC)\nmycon<-odbcConnectAccess2007(\"E:/Rlanguage/data.mdb\")\ndayEv<-sqlFetch(mycon,\"ST_DAYEV\")\ndayQ<-sqlFetch(mycon,\"ST_DAYRIVER\")\ndayRain<-sqlFetch(mycon,\"ST_DAYRNFL\")\nhourEv<-sqlFetch(mycon,\"ST_EV\")\nhourQ<-sqlFetch(mycon,\"ST_RIVER\")\nhourRain<-sqlFetch(mycon,\"ST_RNFL\")\ndayQ<-sqlFetch(mycon,\"ST_DAYRIVER\")\n\nodbcClose(mycon)\n\nlibrary(reshape2)\ndata1<-dcast(data = dayEv,YMDHM~STCD)\ndata2<-data1$YMDHM[difftime(\"2004-1-1 08:00:00\",data1$YMDHM,units = \"days\")>0]\ndata1<-dcast(data = dayEv,YMDHM~STCD)\n",
+    "created" : 1508768718346.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1009532777",
+    "id" : "E688F431",
+    "lastKnownWriteTime" : 1508769655,
+    "last_content_update" : 1508769655119,
+    "path" : "E:/GITHUB/RXAJ/RXAJ/R/DataPrepare.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
