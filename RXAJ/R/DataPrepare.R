@@ -34,27 +34,29 @@ dayRain<-sqlFetch(mycon,"ST_DAYRNFL")
 hourEv<-sqlFetch(mycon,"ST_EV")
 hourQ<-sqlFetch(mycon,"ST_RIVER")
 
-dayQ<-sqlFetch(mycon,"ST_DAYRIVER")
-
 odbcClose(mycon)
 
-library(RODBC)
-mycon<-odbcConnect("heihe")
-hourRain<-sqlFetch(mycon,"ST_RNFL")
-odbcClose(mycon) 
+dayEv$YMDHM<-as.Date(dayEv$YMDHM)
+hourRain<-read.csv("E:/Rlanguage/ST_RNFL.CSV",encoding = "UTF-8")
+colnames(hourRain)[1]<-"STCD"
+hourRain$YMDHM<-as.POSIXct(hourRain$YMDHM)
 
 ##hourRain$YMDHM<-as.POSIXct(hourRain$YMDHM,format="%Y-%m-%d %H:%M:%S")
 library(reshape2)
 data1<-dcast(data = dayEv,YMDHM~STCD,value.var = "EA")
-dayEv<-data1[difftime("2013-1-1 08:00:00",data1$YMDHM,units = "days")>0,1:2]
-data1<-dcast(data = dayRain,YMDHM~STCD)
-dayRain<-data1[difftime("2013-1-1 08:00:00",data1$YMDHM,units = "days")>0,1:ncol(data1)]
-data1<-dcast(data = dayQ,YMDHM~STCD)
-dayQ<-data1[difftime("2013-1-1 08:00:00",data1$YMDHM,units = "days")>0,1:ncol(data1)]
+dayEv<-data1[(difftime("2013-12-31",data1$YMDHM,units = "days")>0) && (difftime("2003-1-1",data1$YMDHM,units = "days")<0),1:2]
+
+data1<-dcast(data = dayRain,YMDHM~STCD,value.var = "PA")
+dayRain<-data1[(difftime("2013-12-31",data1$YMDHM,units = "days")>0) ,1:ncol(data1)]
+
+dayQ<-dayQ[,-4:-5]
+data1<-dcast(data = dayQ,YMDHM~STCD,value.var = "QA")
+dayQ<-data1[difftime("2013-12-31",data1$YMDHM,units = "days")>0,1:ncol(data1)]
+
 data1<-dcast(data = hourEv,YMDHM~STCD)
 hourEv<-data1[difftime("2013-1-1 08:00:00",data1$YMDHM,units = "days")>0,1:ncol(data1)]
 data1<-dcast(data =hourQ,YMDHM~STCD)
 hourQ<-data1[difftime("2013-1-1 08:00:00",data1$YMDHM,units = "days")>0,1:ncol(data1)]
 data1<-dcast(data = hourRain,YMDHM~STCD,mean,value.var = "P")
-hourRain1<-data1[difftime("2013-1-1 08:00:00",data1$YMDHM,units = "days")>0,1:ncol(data1)]
+hourRain<-data1[difftime("2013-1-1 08:00:00",data1$YMDHM,units = "days")>0,1:ncol(data1)]
 
