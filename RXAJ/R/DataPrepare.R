@@ -20,8 +20,6 @@ colnames(basinInfo)<-c("stationP1","stationP2","stationP3","stationP4","stationP
 
 ##The model time-control
 ##The colname of floodInfo is the index number of each flood
-dayStart<-as.Date("2003-5-1")
-dayEnd<-as.Date("2013-5-1")
 
 
 library(RODBC)
@@ -41,17 +39,20 @@ hourRain$YMDHM<-as.POSIXct(hourRain$YMDHM)
 
 ##hourRain$YMDHM<-as.POSIXct(hourRain$YMDHM,format="%Y-%m-%d %H:%M:%S")
 library(reshape2)
+
+dayStart<-as.Date("2003-1-1")
+dayEnd<-as.Date("2013-12-31")
 data1<-dcast(data = dayEv,YMDHM~STCD,value.var = "EA")
-dayE<-data1[(difftime("2013-12-31",data1$YMDHM,units = "days")>=0) && (difftime("2003-1-1",data1$YMDHM,units = "days")<=0),1:2]
+dayE<-data1[(difftime(dayEnd,data1$YMDHM,units = "days")>=0) & (difftime(dayStart,data1$YMDHM,units = "days")<=0),1:2]
 colnames(dayE)<-c("Date","stationE")
 
 data1<-dcast(data = dayRain,YMDHM~STCD,value.var = "PA")
-dayP<-data1[(difftime("2013-12-31",data1$YMDHM,units = "days")>=0) && (difftime("2003-1-1",data1$YMDHM,units = "days")<=0) ,1:ncol(data1)]
-colnames(dayP)<-c("stationP1","stationP2","stationP3","stationP4","stationP5","stationP6","stationP7","stationP8","stationP9")
+dayP<-data1[(difftime(dayEnd,data1$YMDHM,units = "days")>=0) & (difftime(dayStart,data1$YMDHM,units = "days")<=0) ,1:ncol(data1)]
+colnames(dayP)<-c("Date","stationP1","stationP2","stationP3","stationP4","stationP5","stationP6","stationP7","stationP8","stationP9")
 
 dayQ<-dayQ[,-4:-5]
 data1<-dcast(data = dayQ,YMDHM~STCD,value.var = "QA")
-dayQ<-data1[(difftime("2013-12-31",data1$YMDHM,units = "days")>=0) && (difftime("2003-1-1",data1$YMDHM,units = "days")<=0),1:ncol(data1)]
+dayQ<-data1[(difftime(dayEnd,data1$YMDHM,units = "days")>=0) & (difftime(dayStart,data1$YMDHM,units = "days")<=0),1:ncol(data1)]
 dayQ<-data.frame(dayQ,dayQ$`41107150`)
 colnames(dayQ)<-c("Date","Qmea","Qcal")
 
@@ -66,10 +67,23 @@ initialSoilWater[1,]<-WU
 initialSoilWater[2,]<-WL
 initialSoilWater[3,]<-WD
 
-data1<-dcast(data = hourEv,YMDHM~STCD)
-hourEv<-data1[difftime("2013-1-1 08:00:00",data1$YMDHM,units = "days")>0,1:ncol(data1)]
-data1<-dcast(data =hourQ,YMDHM~STCD)
-hourQ<-data1[difftime("2013-1-1 08:00:00",data1$YMDHM,units = "days")>0,1:ncol(data1)]
-data1<-dcast(data = hourRain,YMDHM~STCD,mean,value.var = "P")
-hourRain<-data1[difftime("2013-1-1 08:00:00",data1$YMDHM,units = "days")>0,1:ncol(data1)]
+dayData<-list(dayStart,dayEnd,dayP,dayE,dayQ,initialSoilWater)
 
+
+dataE<-dcast(data = hourEv,YMDHM~STCD)
+dataQ<-dcast(data =hourQ,YMDHM~STCD)
+dataP<-dcast(data = hourRain,YMDHM~STCD,mean,value.var = "P")
+
+colnames(dataE)<-c("YMDHM","stationE")
+dataQ<-data.frame(dataQ,dataQ$`41107100`)
+colnames(dataQ)<-c("YMDHM","Qmea","Qcal")
+colnames(dataP)<-c("YMDHM","stationP1","stationP2","stationP3","stationP4","stationP5","stationP6","stationP7","stationP8","stationP9")
+
+
+timeStart<-as.POSIXct("2003-8-26 22:00:00")
+timeEnd<-as.POSIXct("2003-9-3 19:00:00")
+hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
+hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>0),1:ncol(dataQ)]
+hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>0),1:ncol(dataP)]
+
+floodData1<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater)
