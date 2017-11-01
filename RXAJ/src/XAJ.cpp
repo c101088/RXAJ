@@ -27,7 +27,7 @@ RcppExport SEXP XAJ(SEXP dlt1,SEXP modelParameter1,SEXP basinInfo1,SEXP basinDat
   double Wu,Wl,Wd,Eu,El,Ed,E,P,W,Ep,Pe,A,R;
   double weightVal,initQ,basinArea,RtoQ,Fr0,Fr,Qs,Qi,Qg,Qs0,Qi0,Qg0,S0,S,Au;
   int numIntoS;
-  double KIdt,KGdt,CIdt,CGdt,Pedt,Smmf,Smf,Rs,Ri,Rg,Rsd,Rid,Rgd;
+  double KIdt,KGdt,CIdt,CGdt,Pedt,Smmf,Smf,Rs,Ri,Rg,Rsd,Rid,Rgd,C0,C1,C2;
   
   
   numT=nrow(dayE);
@@ -39,7 +39,7 @@ RcppExport SEXP XAJ(SEXP dlt1,SEXP modelParameter1,SEXP basinInfo1,SEXP basinDat
   KE=modelParameter[15];XE=modelParameter[16];
 
   DM=WM-UM-LM;
-  WMM=(1+B)*WM;
+  WMM=(1+B)*WM/(1-IM);
   MS=(1+EX)*SM  
   
   Rcpp::NumericVector stationE(dayE[1]);
@@ -63,8 +63,8 @@ RcppExport SEXP XAJ(SEXP dlt1,SEXP modelParameter1,SEXP basinInfo1,SEXP basinDat
     Wd=stationW[2];
     weightVal=stationInfo[0];
     reachSub=stationInfo[1];
-    
-    
+    initQ=weightVal*stationQmea[0];
+    Fr0=0.5;
     RtoQ<-weightVal*basinArea/3.6/dlt;
     
     for(iT=0;iT<numT;iT++){
@@ -155,7 +155,7 @@ RcppExport SEXP XAJ(SEXP dlt1,SEXP modelParameter1,SEXP basinInfo1,SEXP basinDat
       
       if(Pe>0){
         Fr=R/Pe;
-        S=S0*Fr0/Fr;
+        S=S0*Fr0/Fr;      //the initial value of S0 and Fro is worth taking care of 
         numIntoS=(int)(Pe/5+1);
         Pedt=Pe/numIntoS;
         
@@ -234,27 +234,25 @@ RcppExport SEXP XAJ(SEXP dlt1,SEXP modelParameter1,SEXP basinInfo1,SEXP basinDat
         
       }
       
-      
       subQ[iT]=Qs+Qi+Qg;
-      
-      
-      
-      
       
     }
     
-    
-    initQ=weightVal*stationQmea[0];
-    
-    for(i=1 ;i<=reachSub;i++){
-      for(j=0;j<numT;j++){
-        if(j==0){
-          
-          
+    for(i=0;i<numT;i++){          //as a DayModel ,L should be 0.
+      if((i-L)<0){
+        if(i==0) {
+          subQ[i]=initQ;
         }else{
-          
-          
+          subQ[i]=initQ*(1-CS)+CS*subQ[i-1];
         }
+        
+      }else{
+        if(i==0){
+          subQ[i]=initQ;
+        }else{
+          subQ[i]=subQ[i-L]*(1-CS)+CS*subQ[i-1];
+        }
+        
         
       }
       
@@ -262,9 +260,45 @@ RcppExport SEXP XAJ(SEXP dlt1,SEXP modelParameter1,SEXP basinInfo1,SEXP basinDat
     }
     
     
+    
+    if(dlt==24) reachSub=1;
+    C0=(0.5*dlt-KE*XE)/(0.5*dlt+KE-KE*XE);
+    C1=(0.5*dlt+kE*XE)/(0.5*dlt+KE-KE*XE);
+    C2=(-0.5*dlt+KE-KE*XE)/(0.5*dlt+KE-KE*XE);
+    
+    
+    for(i=1 ;i<=reachSub;i++){
+      for(j=0;j<numT;j++){
+        if(j==0){
+           msjgQ[j]=C0*subQ[j]+C1*initQ+C2*initQ;
+          
+        }else{
+          msjgQ[j]=C0*subQ[j]+C1*subQ[j-1]+C2*msjgQ[j-1];
+          
+        }
+        
+      }
+      
+      
+      for(j=0;j<numT;j++)  subQ[j]=msjgQ[j];
+      
+    }
+    
+    for(i=0;i<numT;i++) {
+     
+       stationQcal[i]=stationQcal[i]+subQ[i];
+     
+    }
+    
+    
+    
   }
   
-  
-  
+  Rcpp::List resultData = Rcpp::List::create(Rcpp::Named("outWu") = outWu,
+                                             Rcpp::Named("outWl") = outWl,
+                                             Rcpp::Named("outWd") = outWd,
+                                             Rcpp::Named("outE") = outE,
+                                             Rcpp::Named("stationQcal") = stationQcal);
+  return(resultData);
 }
 
