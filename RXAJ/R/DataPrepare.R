@@ -17,7 +17,8 @@ basinInfo[1,]<-c(0.082,0.158,0.150,0.051,0.095,0.098,0.134,0.187,0.045)
 basinInfo[2,]<-c(1,6,5,5,3,4,2,2,1)
 rownames(basinInfo)<-c("sub-basin","sub-river")
 colnames(basinInfo)<-c("stationP1","stationP2","stationP3","stationP4","stationP5","stationP6","stationP7","stationP8","stationP9")
-
+basinArea<-1380
+basinInfo<-list(basinInfo,basinArea)
 
 ##The model time-control
 ##The colname of floodInfo is the index number of each flood

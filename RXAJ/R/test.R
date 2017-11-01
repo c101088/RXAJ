@@ -8,4 +8,4 @@ test<-function(T){
   return(res)
 }
 
-test(dayData)
+test(basinInfo)

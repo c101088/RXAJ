@@ -3,12 +3,15 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
+RcppExport SEXP XAJ(SEXP dlt1,SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   
   Rcpp::NumericVector modelParameter(modelParameter1);
-  Rcpp::DataFrame basinInfo(basinInfo1);
+  Rcpp::List basinInfo2(basinInfo1);
   Rcpp::List basinData(basinData1);
+  double dlt =Rcpp::as<double>(dlt1);
   
+  Rcpp::DataFrame basinInfo(basinInfo2[0]);
+  double basinArea = Rcpp::as<double>(basinInfo2[1]);
   Rcpp::DataFrame dayE(basinData[2]);
   Rcpp::DataFrame dayP(basinData[3]);
   Rcpp::DataFrame dayQ(basinData[4]);
@@ -22,7 +25,7 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   double KC,UM,LM,C,WM,B,IM,SM,EX,KG,KI,CI,CG,CS,L,KE,XE;
   double DM,WMM,MS;
   double Wu,Wl,Wd,Eu,El,Ed,E,P,W,Ep,Pe,A,R;
-  double weightVal,Fr0,Fr,Qs,Qi,Qg,Qs0,Qi0,Qg0,S0,S,Au;
+  double weightVal,initQ,basinArea,RtoQ,Fr0,Fr,Qs,Qi,Qg,Qs0,Qi0,Qg0,S0,S,Au;
   int numIntoS;
   double KIdt,KGdt,CIdt,CGdt,Pedt,Smmf,Smf,Rs,Ri,Rg,Rsd,Rid,Rgd;
   
@@ -40,15 +43,29 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   MS=(1+EX)*SM  
   
   Rcpp::NumericVector stationE(dayE[1]);
+  Rcpp::NumericVector stationQmea(dayQ[1]);
+  Rcpp::NumericVector stationQcal(dayQ[2]);
+  
+  
+  Rcpp::NumericMatrix outWu= Rcpp::NumericMatrix::create(numT,numSub);
+  Rcpp::NumericMatrix outWl= Rcpp::NumericMatrix::create(numT,numSub);
+  Rcpp::NumericMatrix outWd= Rcpp::NumericMatrix::create(numT,numSub);
+  Rcpp::NumericVector outE= Rcpp::NumericVector::create(numT);
+  Rcpp::NumericVector subQ=Rcpp::NumericVector::create(numT);
+  Rcpp::NumericVector msjgQ=Rcpp::NumericVector::create(numT);
+  
   for(iSub=0 ;iSub<numSub;iSub++){
     Rcpp::NumericVector stationP(dayP[iSub+1]);  
     Rcpp::NumericVector stationW(initSoilWater[iSub]);
-    Rcpp::NumericVector stationInfo(basinInfo[1]);
+    Rcpp::NumericVector stationInfo(basinInfo[iSub]);
     Wu=stationW[0];
     Wl=stationW[1];
     Wd=stationW[2];
     weightVal=stationInfo[0];
     reachSub=stationInfo[1];
+    
+    
+    RtoQ<-weightVal*basinArea/3.6/dlt;
     
     for(iT=0;iT<numT;iT++){
       
@@ -130,7 +147,10 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
         
       }
       
-      
+      outWu[iT,iSub]=Wu;
+      outWl[iT,iSub]=Wl;
+      outWd[iT,iSub]=Wd;
+      outE[iT]=outE[iT]+(El+Eu+Ed)*weightVal;
       //The following code will solve the divide water source problem
       
       if(Pe>0){
@@ -187,10 +207,10 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
           
         }
         
-        
-        Qs=Rs*basinArea*weightVal;  //*********remember to define********//
-        Qi=CI*Qi0+(1-CI)*Ri*basinArea*weightVal;
-        Qg=CG*Qg0+(1-CG)*Rg*basinArea*weightVal;
+      
+        Qs=Rs*RtoQ;  //*********remember to define********//
+        Qi=CI*Qi0+(1-CI)*Ri*RtoQ;
+        Qg=CG*Qg0+(1-CG)*Rg*RtoQ;
         
         Qs0=Qs;
         Qi0=Qi;
@@ -203,11 +223,11 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
         Ri=S0*Fr0*KI;
         Rg=S0*Fr0*KG;
         
-        Qs=Rs*basinArea*weightVal;
-        Qi=CI*Qi0+(1-CI)*Ri*basinArea*weightVal;
-        Qg=CG*Qg0+(1-CG)*Rg*basinArea*weightVal;
+        Qs=Rs*RtoQ;
+        Qi=CI*Qi0+(1-CI)*Ri*RtoQ;
+        Qg=CG*Qg0+(1-CG)*Rg*RtoQ;
         
-        S0=S0-(Ri+Rg)/Fr0;
+        S0=S0-(Ri+Rg)/Fr0;      //remember the initial value of Fr0//
         Qs0=Qs;
         Qi0=Qi;
         Qg0=Qg;
@@ -215,7 +235,7 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
       }
       
       
-      
+      subQ[iT]=Qs+Qi+Qg;
       
       
       
@@ -224,8 +244,22 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     }
     
     
+    initQ=weightVal*stationQmea[0];
     
-    
+    for(i=1 ;i<=reachSub;i++){
+      for(j=0;j<numT;j++){
+        if(j==0){
+          
+          
+        }else{
+          
+          
+        }
+        
+      }
+      
+      
+    }
     
     
   }
