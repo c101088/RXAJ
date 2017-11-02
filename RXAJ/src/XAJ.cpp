@@ -4,12 +4,12 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-RcppExport SEXP XAJ(SEXP dlt1,SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
+RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   
   Rcpp::NumericVector modelParameter(modelParameter1);
   Rcpp::List basinInfo2(basinInfo1);
   Rcpp::List basinData(basinData1);
-  double dlt =Rcpp::as<double>(dlt1);
+  double dlt =24;                                   //The dlt of dayModel is setted to 24 hours.
   
   Rcpp::DataFrame basinInfo(basinInfo2[0]);
   double basinArea = Rcpp::as<double>(basinInfo2[1]);
@@ -23,7 +23,7 @@ RcppExport SEXP XAJ(SEXP dlt1,SEXP modelParameter1,SEXP basinInfo1,SEXP basinDat
   
   int iT,iSub,i ,j,k;
   int numT,numSub,reachSub;
- 
+  double weightVal;
 
 
   
@@ -84,6 +84,7 @@ RcppExport SEXP XAJ(SEXP dlt1,SEXP modelParameter1,SEXP basinInfo1,SEXP basinDat
       outWl[iT,iSub]=Wl;
       outWd[iT,iSub]=Wd;
       outE[iT]=outE[iT]+(El+Eu+Ed)*weightVal;
+      subQ[iT]=Qs+Qi+Qg;
       
     }
     
@@ -110,7 +111,7 @@ RcppExport SEXP XAJ(SEXP dlt1,SEXP modelParameter1,SEXP basinInfo1,SEXP basinDat
     
     
     
-    if(dlt==24) reachSub=1;
+    reachSub=1;                             //As a day model ,the number of Sub-basin reach should be 1.
     C0=(0.5*dlt-KE*XE)/(0.5*dlt+KE-KE*XE);
     C1=(0.5*dlt+kE*XE)/(0.5*dlt+KE-KE*XE);
     C2=(-0.5*dlt+KE-KE*XE)/(0.5*dlt+KE-KE*XE);

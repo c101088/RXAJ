@@ -60,17 +60,21 @@ dayQ<-data.frame(dayQ,dayQ$`41107150`)
 colnames(dayQ)<-c("Date","Qmea","Qcal")
 
 
-initialSoilWater<-as.data.frame(matrix(nrow = 3,ncol = 9))
-colnames(initialSoilWater)<-c("stationP1","stationP2","stationP3","stationP4","stationP5","stationP6","stationP7","stationP8","stationP9")
-rownames(initialSoilWater)<-c("WU","WL","WD")
+initialValue<-as.data.frame(matrix(nrow = 8,ncol = 9))
+colnames(initialValue)<-c("stationP1","stationP2","stationP3","stationP4","stationP5","stationP6","stationP7","stationP8","stationP9")
+rownames(initialValue)<-c("WU","WL","WD","QS","QI","QG","SO","Fr0")
 WU<-c(20,19.59,20,20,19.95,19.95,19.95,20,20)
 WL<-rep(90,times=9)
 WD<-rep(70,times=9)
-initialSoilWater[1,]<-WU
-initialSoilWater[2,]<-WL
-initialSoilWater[3,]<-WD
+QS<-rep(1.0,times=9)
+QI<-rep(0.5,times=9)
+QG<-rep(0.5,times=9)
+S0<-rep()
+initialValue[1,]<-WU
+initialValue[2,]<-WL
+initialValue[3,]<-WD
 
-dayData<-list(dayStart,dayEnd,dayE,dayP,dayQ,initialSoilWater)
+dayData<-list(dayStart,dayEnd,dayE,dayP,dayQ,initialValue)
 
 
 
@@ -90,7 +94,7 @@ timeEnd<-as.POSIXct("2003-9-3 19:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData1<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData1<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
 timeStart<-as.POSIXct("2003-9-3 19:00:00")
@@ -98,7 +102,7 @@ timeEnd<-as.POSIXct("2003-9-9 12:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData2<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater)
+floodData2<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue)
 
 
 timeStart<-as.POSIXct("2003-9-17 11:00:00 ")
@@ -106,7 +110,7 @@ timeEnd<-as.POSIXct("2003-9-24 8:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData3<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData3<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
 timeStart<-as.POSIXct("2004-9-2 14:00:00")
@@ -114,7 +118,7 @@ timeEnd<-as.POSIXct("2004-9-11 2:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData4<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData4<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
 timeStart<-as.POSIXct("2005-7-1 6:00:00")
@@ -122,7 +126,7 @@ timeEnd<-as.POSIXct("2005-7-8 1:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData5<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData5<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
 timeStart<-as.POSIXct("2005-9-25 20:00:00")
@@ -130,7 +134,7 @@ timeEnd<-as.POSIXct("2005-10-5 18:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData6<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData6<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
 timeStart<-as.POSIXct("2006-9-3 8:00:00")
@@ -138,7 +142,7 @@ timeEnd<-as.POSIXct("2006-9-7 9:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData7<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData7<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
 timeStart<-as.POSIXct("2006-9-25 7:00:00")
@@ -146,7 +150,7 @@ timeEnd<-as.POSIXct("2006-10-2 4:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData8<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData8<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
 timeStart<-as.POSIXct("2007-7-4 4:00:00")
@@ -154,7 +158,7 @@ timeEnd<-as.POSIXct("2007-7-10 21:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData9<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData9<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
 timeStart<-as.POSIXct("2008-7-19 9:00:00")
@@ -162,7 +166,7 @@ timeEnd<-as.POSIXct("2008-7-25 3:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData10<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData10<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
 timeStart<-as.POSIXct("2009-8-18 14:00:00")
@@ -170,7 +174,7 @@ timeEnd<-as.POSIXct("2009-8-25 1:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData11<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData11<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
 timeStart<-as.POSIXct("2010-7-15 8:00:00")
@@ -178,7 +182,7 @@ timeEnd<-as.POSIXct("2010-7-21 1:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData12<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData12<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
 timeStart<-as.POSIXct("2010-7-21 1:00:00")
@@ -186,7 +190,7 @@ timeEnd<-as.POSIXct("2010-7-27 8:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData13<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData13<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
 timeStart<-as.POSIXct("2010-8-18 20:00:00")
@@ -194,7 +198,7 @@ timeEnd<-as.POSIXct("2010-8-22 18:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData14<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData14<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
 timeStart<-as.POSIXct("2010-8-22 18:00:00")
@@ -202,7 +206,7 @@ timeEnd<-as.POSIXct("2010-8-27 15:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
-floodData15<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialSoilWater) 
+floodData15<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 hhData<-list(modelPapameter,basinInfo,dayData,floodData1,floodData2,floodData3,floodData4,floodData5
                 ,floodData6,floodData7,floodData8,floodData9,floodData10,floodData11,floodData12,floodData13,floodData14,floodData15)

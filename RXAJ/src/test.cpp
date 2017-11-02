@@ -2,7 +2,7 @@
 using namespace Rcpp;
 
 
-Rcpp::NumericMatrix fun1(SEXP df1){
+void fun1(SEXP df1){
   int i,j;
   
   Rcpp::NumericMatrix df2(df1);
@@ -12,7 +12,7 @@ Rcpp::NumericMatrix fun1(SEXP df1){
     
   }
   
-  return(df2);
+ // return(df2);
   
 }
 
@@ -29,10 +29,10 @@ RcppExport SEXP test(SEXP T1) {
   //i=*T[1][1];
   //i = Rcpp::as<double>(stationE[1]);
   Rcpp::NumericMatrix df(T1);
-  df= fun1(df);
+  fun1(df);
   //double i = Rcpp::as<double>(df[1]);
   
-  return (df);
+  return (Rcpp::wrap(0));
 }
 
 

@@ -4,11 +4,11 @@ using namespace Rcpp;
 
 double KC,UM,LM,C,WM,B,IM,SM,EX,KG,KI,CI,CG,CS,L,KE,XE;  double DM,WMM,MS;
 double Wu,Wl,Wd,Eu,El,Ed;
-double weightVal,initQ,basinArea,RtoQ,Fr0,Qs,Qi,Qg,Qs0,Qi0,Qg0,S0;
+double initQ,basinArea,RtoQ,Fr0,Qs,Qi,Qg,Qs0,Qi0,Qg0,S0;
 
 
 
-Rcpp::List ER(SEXP E1,SEXP P1){
+void ER(SEXP E1,SEXP P1){
   double E,P,Ep,Pe,R,A,W;
   int numIntoS;
   double Fr,S,Au;
@@ -70,7 +70,7 @@ Rcpp::List ER(SEXP E1,SEXP P1){
       
       if((Pe+A)<=WMM){
         
-        R = Pe+W-WM+WM*pow((1-(Pe+A)/WMM),B+1);
+        R = Pe+W-WM+WM*pow((1-(Pe+A)/(WMM+0.0001)),B+1);
         
       }else{
         R=Pe-(Wm-W);
@@ -174,8 +174,7 @@ Rcpp::List ER(SEXP E1,SEXP P1){
       Qg0=Qg;
       
     }
-    
-    subQ[iT]=Qs+Qi+Qg;
+
   
   
   
