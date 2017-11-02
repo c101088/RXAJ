@@ -8,4 +8,6 @@ test<-function(T){
   return(res)
 }
 
-test(basinInfo)
+someMatrix=matrix(nrow = 2,ncol = 2)
+
+test(someMatrix)
