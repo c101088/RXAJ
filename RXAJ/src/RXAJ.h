@@ -12,7 +12,7 @@ void ER(SEXP E1,SEXP P1){
   double E,P,Ep,Pe,R,A,W;
   int numIntoS;
   double Fr,S,Au;
-  double KIdt,KGdt,CIdt,CGdt,Pedt,Smmf,Smf,Rs,Ri,Rg,Rsd,Rid,Rgd,C0,C1,C2;
+  double KIdt,KGdt,CIdt,CGdt,Pedt,Smmf,Smf,Rs,Ri,Rg,Rsd,Rid,Rgd;
   
   E=Rcpp::as<double>(E1);
   P=Rcpp::as<double>(P1);
@@ -45,7 +45,7 @@ void ER(SEXP E1,SEXP P1){
   
   A=WMM*(1-pow((1-W/WM),(1/(1+B))))
     
-    if(P==0){
+    if(fabs(P-0)<=0.0001){
       R=0;
       Wu=Wu-Eu;
       Wl=Wl-El;
@@ -107,7 +107,7 @@ void ER(SEXP E1,SEXP P1){
       Ri=0;
       Rg=0;
       
-      if(EX==0){
+      if(fabs(EX-0)<=0.0001){
         SMMF=MS;
       }else{
         

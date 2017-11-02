@@ -1,6 +1,14 @@
-XAJ1<-function(numT1,dayE1){
+dXAJ<-function(modelParameter,basinInfo,basinData){
   
-  dd<-.Call("XAJ",numT1,dayE1)
-  return(dd)
+  res<-.Call("dXAJ",modelParameter,basinInfo,basinData)
+  
+  return()
+}
+
+hXAJ<-function(modelParameter,basinInfo,basinData){
+  
+  res<-.Call("hXAJ",modelParameter,basinInfo,basinData)
+  
+  
 }
 

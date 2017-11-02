@@ -69,10 +69,16 @@ WD<-rep(70,times=9)
 QS<-rep(1.0,times=9)
 QI<-rep(0.5,times=9)
 QG<-rep(0.5,times=9)
-S0<-rep()
+S0<-rep(0.5,times=9)
+Fr0<-rep(0.5,times=9)
 initialValue[1,]<-WU
 initialValue[2,]<-WL
 initialValue[3,]<-WD
+initialValue[4,]<-QS
+initialValue[5,]<-QI
+initialValue[6,]<-QG
+initialValue[7,]<-S0
+initialValue[8,]<-Fr0
 
 dayData<-list(dayStart,dayEnd,dayE,dayP,dayQ,initialValue)
 
