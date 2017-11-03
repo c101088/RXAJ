@@ -52,7 +52,8 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   Rcpp::NumericMatrix outFr0= Rcpp::NumericMatrix::create(numT,numSub);
   Rcpp::NumericMatrix outS0= Rcpp::NumericMatrix::create(numT,numSub);
   Rcpp::NumericVector outE= Rcpp::NumericVector::create(numT);
-  Rcpp::NumericVector subQ=Rcpp::NumericVector::create(numT);
+  Rcpp::NumericVector outP= Rcpp::NumericVector::create(numT);
+  Rcpp::NumericVector subQ= Rcpp::NumericVector::create(numT);
   Rcpp::NumericVector msjgQ=Rcpp::NumericVector::create(numT);
   
   DM=WM-UM-LM;
@@ -84,9 +85,10 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
       ER(stationP[iT],stationE[iT]);
       
       outWu(iT,iSub)=Wu;
-      outWl)iT,iSub)=Wl;
-      outWd)iT,iSub)=Wd;
+      outWl(iT,iSub)=Wl;
+      outWd(iT,iSub)=Wd;
       outE[iT]=outE[iT]+(El+Eu+Ed)*weightVal;
+      outP[iT]=outP[iT]+stationP[iT]*weightVal;
       subQ[iT]=Qs+Qi+Qg;
       
     }
@@ -154,6 +156,7 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
                                              Rcpp::Named("outS0") = outS0,
                                              Rcpp::Named("outFr0") = outFr0,
                                              Rcpp::Named("outE") = outE,
+                                             Rcpp::Named("outP") = outP,
                                              Rcpp::Named("stationQcal") = stationQcal);
   return(resultData);
 }

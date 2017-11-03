@@ -2,9 +2,8 @@
 
 ##The model parameter
 parameterName<-c("KC","UM","LM","C","WM","B","IM","SM","EX","KG","KI","CI","CG","CS","L","KE","XE")
-
-dayParameterValue<-c(0.5,15,80,0.15,180,0.2,0.03,0,1.2,0,0,0,0,0,0,0,0)
-hourParameterValue<-c(0.5,15,80,0.15,180,0.2,0.03,0,1.2,0,0,0,0,0,0,0,0)
+dayParameterValue<-c(0.6,20,90,0.08,180,0.3,0.03,10,1.2,0.4,0.3,0.7,0.995,0.2,0,24,0.35)
+hourParameterValue<-c(0.6,20,90,0.08,180,0.3,0.03,10,1.2,0.35,0.35,0.65,0.998,0.085,0,1,0.35)
 
 modelPapameter<-data.frame(dayParameterValue,hourParameterValue)
 rownames(modelPapameter)<-parameterName
