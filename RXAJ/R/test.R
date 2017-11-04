@@ -11,3 +11,6 @@ test<-function(T){
 someMatrix=matrix(nrow = 2,ncol = 2)
 
 test(someMatrix)
+
+
+numV<-c(1,2,3,4,4,8,5,5,5)

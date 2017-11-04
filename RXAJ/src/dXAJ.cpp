@@ -20,10 +20,10 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   Rcpp::function nrow("nrow");
   Rcpp::function ncol("ncol");
   
-  double dlt =24;                                   //The dlt of dayModel is setted to 24 hours.
+  int dlt =24;                                   //The dlt of dayModel is setted to 24 hours.
   int iT,iSub,i,j,k;
   int numT,numSub,reachSub;
-  double weightVal,C0,C1,C2;
+  double initialW,weightVal,C0,C1,C2;
   
   C0=(0.5*dlt-KE*XE)/(0.5*dlt+KE-KE*XE);
   C1=(0.5*dlt+kE*XE)/(0.5*dlt+KE-KE*XE);
@@ -53,6 +53,7 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   Rcpp::NumericMatrix outS0= Rcpp::NumericMatrix::create(numT,numSub);
   Rcpp::NumericVector outE= Rcpp::NumericVector::create(numT);
   Rcpp::NumericVector outP= Rcpp::NumericVector::create(numT);
+  Rcpp::NumericVector outW= Rcpp::NumericVector::create(numT+1);
   Rcpp::NumericVector subQ= Rcpp::NumericVector::create(numT);
   Rcpp::NumericVector msjgQ=Rcpp::NumericVector::create(numT);
   
@@ -80,6 +81,7 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     initQ=weightVal*stationQmea[0];
     RtoQ<-weightVal*basinArea/3.6/dlt;
     
+    initialW= initialW+(Wu+Wl+Wd)*weightVal;    //initialW is used for calculate  the water balance
     for(iT=0;iT<numT;iT++){
       
       ER(stationP[iT],stationE[iT]);
@@ -89,6 +91,7 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
       outWd(iT,iSub)=Wd;
       outE[iT]=outE[iT]+(El+Eu+Ed)*weightVal;
       outP[iT]=outP[iT]+stationP[iT]*weightVal;
+      outW[iT+1]=outW[iT+1]+(Wu+Wl+Wd)*weightVal;
       subQ[iT]=Qs+Qi+Qg;
       
     }
@@ -140,8 +143,18 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     for(i=0;i<numT;i++) {
      
        stationQcal[i]=stationQcal[i]+subQ[i];
+      
+        
      
     }
+    if(iSub == numSub){
+      outW[0] = initialW;
+      for(i=numT+1;i>=1;i--){
+        outW[i] = outW[i]-outW[i-1];
+        
+      }  
+      
+    }    
     
     
     
@@ -150,6 +163,7 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   Rcpp::List resultData = Rcpp::List::create(Rcpp::Named("outWu") = outWu,
                                              Rcpp::Named("outWl") = outWl,
                                              Rcpp::Named("outWd") = outWd,
+                                             Rcpp::Named("outW") = outW,
                                              Rcpp::Named("outQs0") = outQs0,
                                              Rcpp::Named("outQi0") = outQi0,
                                              Rcpp::Named("outQg0") = outQg0,
