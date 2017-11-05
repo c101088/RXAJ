@@ -1,10 +1,11 @@
-#include <Rcpp.h>
 #include <math.h>
 #include <RXAJ.h>
+#include <stdio.h>
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
+RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
+  fp= fopen("123.txt","w");
   
   Rcpp::NumericVector modelParameter(modelParameter1);
   Rcpp::List basinInfo2(basinInfo1);
@@ -12,24 +13,25 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   
   
   Rcpp::DataFrame basinInfo(basinInfo2[0]);
-  double basinArea = Rcpp::as<double>(basinInfo2[1]);
+  basinArea = Rcpp::as<double>(basinInfo2[1]);
   Rcpp::DataFrame dayE(basinData[2]);
   Rcpp::DataFrame dayP(basinData[3]);
   Rcpp::DataFrame dayQ(basinData[4]);
   Rcpp::DataFrame initialValue(basinData[5]);
-  Rcpp::function nrow("nrow");
-  Rcpp::function ncol("ncol");
+  
+  Rcpp::Function nrow("nrow");
+  Rcpp::Function ncol("ncol");
   
   int dlt =24;                                   //The dlt of dayModel is setted to 24 hours.
-  int iT,iSub,i,j,k;
+  int iT,iSub,i,j;
   int numT,numSub,reachSub;
-  double initialW,weightVal,C0,C1,C2;
+  double E,P,initialW=0,weightVal,C0,C1,C2;
   
   C0=(0.5*dlt-KE*XE)/(0.5*dlt+KE-KE*XE);
-  C1=(0.5*dlt+kE*XE)/(0.5*dlt+KE-KE*XE);
+  C1=(0.5*dlt+KE*XE)/(0.5*dlt+KE-KE*XE);
   C2=(-0.5*dlt+KE-KE*XE)/(0.5*dlt+KE-KE*XE);
-  numT=nrow(dayE);
-  numSub=ncol(dayP)-1;
+  numT=Rcpp::as<int>(nrow(dayE));
+  numSub=Rcpp::as<int>(ncol(dayP))-1;
   
   KC=modelParameter[0];UM=modelParameter[1];LM=modelParameter[2];C=modelParameter[3];WM=modelParameter[4];
   B=modelParameter[5];IM=modelParameter[6];SM=modelParameter[7];EX=modelParameter[8];KG=modelParameter[9];
@@ -43,14 +45,14 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   Rcpp::NumericVector stationQcal(dayQ[2]);
   
   
-  Rcpp::NumericMatrix outWu= Rcpp::NumericMatrix::create(numT,numSub);
-  Rcpp::NumericMatrix outWl= Rcpp::NumericMatrix::create(numT,numSub);
-  Rcpp::NumericMatrix outWd= Rcpp::NumericMatrix::create(numT,numSub);
-  Rcpp::NumericMatrix outQs0= Rcpp::NumericMatrix::create(numT,numSub);
-  Rcpp::NumericMatrix outQi0= Rcpp::NumericMatrix::create(numT,numSub);
-  Rcpp::NumericMatrix outQg0= Rcpp::NumericMatrix::create(numT,numSub);
-  Rcpp::NumericMatrix outFr0= Rcpp::NumericMatrix::create(numT,numSub);
-  Rcpp::NumericMatrix outS0= Rcpp::NumericMatrix::create(numT,numSub);
+  Rcpp::NumericMatrix outWu(numT,numSub);
+  Rcpp::NumericMatrix outWl(numT,numSub);
+  Rcpp::NumericMatrix outWd(numT,numSub);
+  Rcpp::NumericMatrix outQs0(numT,numSub);
+  Rcpp::NumericMatrix outQi0(numT,numSub);
+  Rcpp::NumericMatrix outQg0(numT,numSub);
+  Rcpp::NumericMatrix outFr0(numT,numSub);
+  Rcpp::NumericMatrix outS0(numT,numSub);
   Rcpp::NumericVector outE= Rcpp::NumericVector::create(numT);
   Rcpp::NumericVector outP= Rcpp::NumericVector::create(numT);
   Rcpp::NumericVector outW= Rcpp::NumericVector::create(numT+1);
@@ -59,10 +61,12 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   
   DM=WM-UM-LM;
   WMM=(1+B)*WM/(1-IM);
-  MS=(1+EX)*SM  
-  
+  MS=(1+EX)*SM;  
+  Rcpp::Function browser("browser");
+//  browser();
   
   for(iSub=0 ;iSub<numSub;iSub++){
+ //   printf("*************iSub = %d*******\n",iSub);
     Rcpp::NumericVector stationP(dayP[iSub+1]);  
     Rcpp::NumericVector stationInit(initialValue[iSub]);
     Rcpp::NumericVector stationInfo(basinInfo[iSub]);
@@ -75,16 +79,16 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     S0=stationInit[6];
     Fr0=stationInit[7];
     
-    
     weightVal=stationInfo[0];
     reachSub=stationInfo[1];
     initQ=weightVal*stationQmea[0];
-    RtoQ<-weightVal*basinArea/3.6/dlt;
+    RtoQ=weightVal*basinArea/3.6/dlt;
     
     initialW= initialW+(Wu+Wl+Wd)*weightVal;    //initialW is used for calculate  the water balance
     for(iT=0;iT<numT;iT++){
-      
-      ER(stationP[iT],stationE[iT]);
+      P=(stationP[iT]);
+      E=(stationE[iT]);
+      ER(E,P);
       
       outWu(iT,iSub)=Wu;
       outWl(iT,iSub)=Wl;
@@ -94,18 +98,19 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
       outW[iT+1]=outW[iT+1]+(Wu+Wl+Wd)*weightVal;
       subQ[iT]=Qs+Qi+Qg;
       
+//      fprintf(fp,"%f %f %f %f\n",E,P,Wu,subQ[iT]);
     }
     
     for(i=0;i<numT;i++){          //as a DayModel ,L should be 0.
       if((i-L)<0){
-        if(i==0) {
+        if(abs(i)<0.001) {
           subQ[i]=initQ;
         }else{
           subQ[i]=initQ*(1-CS)+CS*subQ[i-1];
         }
         
       }else{
-        if(i==0){
+        if(abs(i)<0.001){
           subQ[i]=initQ;
         }else{
           subQ[i]=subQ[i-L]*(1-CS)+CS*subQ[i-1];
@@ -125,7 +130,7 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     
     for(i=1 ;i<=reachSub;i++){
       for(j=0;j<numT;j++){
-        if(j==0){
+        if(abs(j)<0.001){
            msjgQ[j]=C0*subQ[j]+C1*initQ+C2*initQ;
           
         }else{
@@ -147,7 +152,7 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
         
      
     }
-    if(iSub == numSub){
+    if(abs(iSub-numSub)<0.001){
       outW[0] = initialW;
       for(i=numT+1;i>=1;i--){
         outW[i] = outW[i]-outW[i-1];
@@ -159,19 +164,33 @@ RcppExport SEXP XAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     
     
   }
+  browser();
+  for(i = 0 ;i<numT;i++){
+    if(i%10 ==0){
+      printf("%f \n",stationQcal[i]);
+    }else{
+      printf("%f ",stationQcal[i]);
+    }
+    
+  }
   
-  Rcpp::List resultData = Rcpp::List::create(Rcpp::Named("outWu") = outWu,
-                                             Rcpp::Named("outWl") = outWl,
-                                             Rcpp::Named("outWd") = outWd,
-                                             Rcpp::Named("outW") = outW,
-                                             Rcpp::Named("outQs0") = outQs0,
-                                             Rcpp::Named("outQi0") = outQi0,
-                                             Rcpp::Named("outQg0") = outQg0,
-                                             Rcpp::Named("outS0") = outS0,
-                                             Rcpp::Named("outFr0") = outFr0,
-                                             Rcpp::Named("outE") = outE,
-                                             Rcpp::Named("outP") = outP,
-                                             Rcpp::Named("stationQcal") = stationQcal);
-  return(resultData);
+  
+  fclose(fp);
+  printf("*****the loop is over!!*****\n");
+
+  // Rcpp::List resultData = Rcpp::List::create(Rcpp::Named("outWu") = outWu,
+  //                                            Rcpp::Named("outWl") = outWl,
+  //                                            Rcpp::Named("outWd") = outWd,
+  //                                            Rcpp::Named("outW") = outW,
+  //                                            Rcpp::Named("outQs0") = outQs0,
+  //                                            Rcpp::Named("outQi0") = outQi0,
+  //                                            Rcpp::Named("outQg0") = outQg0,
+  //                                            Rcpp::Named("outS0") = outS0,
+  //                                            Rcpp::Named("outFr0") = outFr0,
+  //                                            Rcpp::Named("outE") = outE,
+  //                                            Rcpp::Named("outP") = outP,
+  //                                            Rcpp::Named("stationQcal") = stationQcal);
+  
+  return(stationQcal);
 }
 

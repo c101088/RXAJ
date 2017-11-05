@@ -1,22 +1,28 @@
+setwd("E:/RXAJ/RXAJ/src")
+library(Rcpp) 
 library(reshape2)
 library(lubridate)
 library(recharts)
+
+sourceCpp("dXAJ.cpp")
 dXAJ<-function(modelParameter,basinInfo,basinData){
   
   dayResult<-.Call("dXAJ",modelParameter,basinInfo,basinData)
   
-  totalR<-dayResult[[12]]
-  totalR<-totalR*24*3.6
-  sumResult<-as.data.frame(basinData[[4]]$Date,dayResult[[11]],dayResult[[10]],totalR,dayResult[[4]])
-  sumResultBalance<-sumResult
-  sumResultBalance$Date<-year(sumResultBalance$Date)
-  sumResultBalance<-melt(sumResultBalance,id=c("Date"))
-  sumResultBalance<-dcast(sumResultBalance,Date~variable,sum) 
-  
-  showResult(sumResult)
-  
+  # totalR<-dayResult[[12]]
+  # totalR<-totalR*24*3.6
+  # sumResult<-as.data.frame(basinData[[4]]$Date,dayResult[[11]],dayResult[[10]],totalR,dayResult[[4]][-1,])
+  # sumResultBalance<-sumResult
+  # sumResultBalance$Date<-year(sumResultBalance$Date)
+  # sumResultBalance<-melt(sumResultBalance,id=c("Date"))
+  # sumResultBalance<-dcast(sumResultBalance,Date~variable,sum) 
+  # 
+  # showResult(sumResult)
+  # 
   return()
 }
+
+dXAJ(modelParameter =hhData[[1]]$dayParameterValue,basinInfo = hhData[[2]],basinData = hhData[[3]])
 
 hXAJ<-function(modelParameter,basinInfo,basinData){
   

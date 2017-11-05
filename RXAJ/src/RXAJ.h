@@ -4,26 +4,25 @@ using namespace Rcpp;
 
 double KC,UM,LM,C,WM,B,IM,SM,EX,KG,KI,CI,CG,CS,L,KE,XE;  double DM,WMM,MS;
 double Wu,Wl,Wd,Eu,El,Ed;
-double initQ,basinArea,RtoQ,Fr0,Qs,Qi,Qg,Qs0,Qi0,Qg0,S0;
+double initQ,basinArea,RIM,RtoQ,Fr0,Qs,Qi,Qg,Qs0,Qi0,Qg0,S0;
+FILE *fp;
 
 
 
-void ER(SEXP E1,SEXP P1){
-  double E,P,Ep,Pe,R,A,W;
-  int numIntoS;
+void ER(double E,double P){
+  double Ep,Pe,R,A,W;
+  int numIntoS,i;
   double Fr,S,Au;
-  double KIdt,KGdt,CIdt,CGdt,Pedt,Smmf,Smf,Rs,Ri,Rg,Rsd,Rid,Rgd;
+  double KIdt,KGdt,Pedt,SMMF,SMF,Rs,Ri,Rg,Rsd,Rid,Rgd;
   
-  E=Rcpp::as<double>(E1);
-  P=Rcpp::as<double>(P1);
   
   Ep=KC*E;
-  if((Wu+P)>EP){
+  if((Wu+P)>Ep){
     Eu=Ep;
     El=0;
     Ed=0;
   }else{
-    Eu=Wu+p;
+    Eu=Wu+P;
     if(Wl >= C*LM){
       El=(Ep-Eu)*Wl/LM;
       Ed=0;
@@ -33,7 +32,7 @@ void ER(SEXP E1,SEXP P1){
       Ed=0;
       
     }else{
-      El=WL;
+      El=Wl;
       Ed=C*(Ep-Eu)-El;
       
     }
@@ -43,15 +42,9 @@ void ER(SEXP E1,SEXP P1){
   Pe=P-Eu-El-Ed;
   W=Wu+Wl+Wd;
   
-  A=WMM*(1-pow((1-W/WM),(1/(1+B))))
+  A=WMM*(1-pow((1-W/WM),(1/(1+B))));
     
-    if(fabs(P-0)<=0.0001){
-      R=0;
-      Wu=Wu-Eu;
-      Wl=Wl-El;
-      Wd=Wd-Ed;
-      
-    }else if(Pe<=0){
+   if(Pe<=0){
       R=0;
       Wu=Wu+P-Eu;
       if(Wu>UM){
@@ -59,34 +52,42 @@ void ER(SEXP E1,SEXP P1){
         Wu=UM;
         if(Wl>LM){
           Wd=Wd+Wl-LM-Ed;
+          Wl=LM;
         }else{
           Wd=Wd-Ed;
         }
         
+      }else{
+        Wl=Wl-El;
+        Wd=Wd-Ed;
       }
       
       
     }else{
-      
+      RIM = Pe*IM;
       if((Pe+A)<=WMM){
         
         R = Pe+W-WM+WM*pow((1-(Pe+A)/(WMM+0.0001)),B+1);
         
       }else{
-        R=Pe-(Wm-W);
+        R=Pe-(WM-W);
         
       }
       
-      Wu=Wu+P-Eu;
+      Wu=Wu+P-R-Eu;
       if(Wu>UM){
         Wl=Wl+Wu-UM-El;
         Wu=UM;
         if(Wl>LM){
           Wd=Wd+Wl-LM-Ed;
+          Wl=LM;
         }else{
           Wd=Wd-Ed;
         }
         
+      }else{
+        Wl=Wl-El;
+        Wd=Wd-Ed;
       }
       
     }
@@ -147,9 +148,11 @@ void ER(SEXP E1,SEXP P1){
         Rg=Rg+Rgd;
         
       }
+      Rs=Rs*(1-IM);
+      Ri=Ri*(1-IM);
+      Rg=Rg*(1-IM);
       
-      
-      Qs=Rs*RtoQ;  //*********remember to define********//
+      Qs=(Rs+RIM)*RtoQ;  //*********remember to define********//
       Qi=CI*Qi0+(1-CI)*Ri*RtoQ;
       Qg=CG*Qg0+(1-CG)*Rg*RtoQ;
       
@@ -178,6 +181,6 @@ void ER(SEXP E1,SEXP P1){
   
   
   
-  
+  fprintf(fp,"%f %f %f %f %f %f %f %f %f \n",Wu,Wl,Wd,Eu,El,Ed,Rs,Ri,Rg);
   
 }
