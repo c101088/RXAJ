@@ -39,7 +39,6 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   KE=modelParameter[15];XE=modelParameter[16];
 
 
-  
   Rcpp::NumericVector stationE(dayE[1]);
   Rcpp::NumericVector stationQmea(dayQ[1]);
   Rcpp::NumericVector stationQcal(dayQ[2]);
@@ -53,11 +52,11 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   Rcpp::NumericMatrix outQg0(numT,numSub);
   Rcpp::NumericMatrix outFr0(numT,numSub);
   Rcpp::NumericMatrix outS0(numT,numSub);
-  Rcpp::NumericVector outE= Rcpp::NumericVector::create(numT);
-  Rcpp::NumericVector outP= Rcpp::NumericVector::create(numT);
-  Rcpp::NumericVector outW= Rcpp::NumericVector::create(numT+1);
-  Rcpp::NumericVector subQ= Rcpp::NumericVector::create(numT);
-  Rcpp::NumericVector msjgQ=Rcpp::NumericVector::create(numT);
+  Rcpp::NumericVector outE(numT);
+  Rcpp::NumericVector outP(numT);
+  Rcpp::NumericVector outW(numT+1);
+  Rcpp::NumericVector subQ(numT);
+  Rcpp::NumericVector msjgQ(numT);
   
   DM=WM-UM-LM;
   WMM=(1+B)*WM/(1-IM);
@@ -83,7 +82,7 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     reachSub=stationInfo[1];
     initQ=weightVal*stationQmea[0];
     RtoQ=weightVal*basinArea/3.6/dlt;
-    
+    printf("****%f %f %f *******\n",Wu,S0,Fr0);
     initialW= initialW+(Wu+Wl+Wd)*weightVal;    //initialW is used for calculate  the water balance
     for(iT=0;iT<numT;iT++){
       P=(stationP[iT]);
@@ -149,7 +148,7 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
      
        stationQcal[i]=stationQcal[i]+subQ[i];
       
-        
+        fprintf(fp,"%f \n",stationQcal[i]);
      
     }
     if(abs(iSub-numSub)<0.001){
@@ -164,33 +163,33 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     
     
   }
-  browser();
-  for(i = 0 ;i<numT;i++){
-    if(i%10 ==0){
-      printf("%f \n",stationQcal[i]);
-    }else{
-      printf("%f ",stationQcal[i]);
-    }
-    
-  }
+ // browser();
+  // for(i = 0 ;i<numT;i++){
+  //   if(i%10 ==0){
+  //     printf("%f \n",stationQcal[i]);
+  //   }else{
+  //     printf("%f ",stationQcal[i]);
+  //   }
+  //   
+  // }
   
   
   fclose(fp);
   printf("*****the loop is over!!*****\n");
 
-  // Rcpp::List resultData = Rcpp::List::create(Rcpp::Named("outWu") = outWu,
-  //                                            Rcpp::Named("outWl") = outWl,
-  //                                            Rcpp::Named("outWd") = outWd,
-  //                                            Rcpp::Named("outW") = outW,
-  //                                            Rcpp::Named("outQs0") = outQs0,
-  //                                            Rcpp::Named("outQi0") = outQi0,
-  //                                            Rcpp::Named("outQg0") = outQg0,
-  //                                            Rcpp::Named("outS0") = outS0,
-  //                                            Rcpp::Named("outFr0") = outFr0,
-  //                                            Rcpp::Named("outE") = outE,
-  //                                            Rcpp::Named("outP") = outP,
-  //                                            Rcpp::Named("stationQcal") = stationQcal);
-  
-  return(stationQcal);
+  Rcpp::List resultData = Rcpp::List::create(Rcpp::Named("outWu") = outWu,
+                                             Rcpp::Named("outWl") = outWl,
+                                             Rcpp::Named("outWd") = outWd,
+                                             Rcpp::Named("outW") = outW,
+                                             Rcpp::Named("outQs0") = outQs0,
+                                             Rcpp::Named("outQi0") = outQi0,
+                                             Rcpp::Named("outQg0") = outQg0,
+                                             Rcpp::Named("outS0") = outS0,
+                                             Rcpp::Named("outFr0") = outFr0,
+                                             Rcpp::Named("outE") = outE,
+                                             Rcpp::Named("outP") = outP,
+                                             Rcpp::Named("stationQcal") = stationQcal);
+
+  return(resultData);
 }
 

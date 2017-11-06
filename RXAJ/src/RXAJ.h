@@ -1,21 +1,23 @@
 #include <Rcpp.h>
-#include <math.h>
+#include <cmath>
 using namespace Rcpp;
 
-double KC,UM,LM,C,WM,B,IM,SM,EX,KG,KI,CI,CG,CS,L,KE,XE;  double DM,WMM,MS;
+double KC,UM,LM,C,WM,B,IM,SM,EX,KG,KI,CI,CG,CS,L,KE,XE;  
+double DM,WMM,MS;
 double Wu,Wl,Wd,Eu,El,Ed;
 double initQ,basinArea,RIM,RtoQ,Fr0,Qs,Qi,Qg,Qs0,Qi0,Qg0,S0;
+int stepCon=0;
 FILE *fp;
-
+//Rcpp::Function browser("browser");
 
 
 void ER(double E,double P){
   double Ep,Pe,R,A,W;
-  int numIntoS,i;
-  double Fr,S,Au;
-  double KIdt,KGdt,Pedt,SMMF,SMF,Rs,Ri,Rg,Rsd,Rid,Rgd;
+  int numIntoS=0,i;
+  double Fr=0,S=0,Au=0;
+  double KIdt=0,KGdt=0,Pedt,SMMF,SMF,Rs,Ri,Rg,Rsd,Rid,Rgd;
   
-  
+  stepCon++;
   Ep=KC*E;
   if((Wu+P)>Ep){
     Eu=Ep;
@@ -41,10 +43,12 @@ void ER(double E,double P){
   
   Pe=P-Eu-El-Ed;
   W=Wu+Wl+Wd;
-  
-  A=WMM*(1-pow((1-W/WM),(1/(1+B))));
-    
-   if(Pe<=0){
+//  if(stepCon == 262) browser();
+ // if(stepCon == 262) printf("A WM**%f %f %f %f %f***\n",A,WMM,W,WM,B);
+  A=(double)WMM*(1-pow((1-W/(WM+0.001)),(1/(1+B))));
+ // if(1/(1+B)<0) printf("###in %d the 1/(1+B) <0",stepCon);
+//if(stepCon == 262) printf("A WM**%f %f %f %f %f***\n",A,WMM,W,WM,B);
+   if(Pe<=0.001){
       R=0;
       Wu=Wu+P-Eu;
       if(Wu>UM){
@@ -67,7 +71,7 @@ void ER(double E,double P){
       RIM = Pe*IM;
       if((Pe+A)<=WMM){
         
-        R = Pe+W-WM+WM*pow((1-(Pe+A)/(WMM+0.0001)),B+1);
+        R = Pe+W-WM+WM*pow((1-(Pe+A)/WMM),B+1);
         
       }else{
         R=Pe-(WM-W);
@@ -95,9 +99,9 @@ void ER(double E,double P){
 
     //The following code will solve the divide water source problem
     
-    if(Pe>0){
+    if(Pe>0.001){
       Fr=R/Pe;
-      S=S0*Fr0/Fr;      //the initial value of S0 and Fro is worth taking care of 
+
       numIntoS=(int)(Pe/5+1);
       Pedt=Pe/numIntoS;
       
@@ -112,14 +116,15 @@ void ER(double E,double P){
         SMMF=MS;
       }else{
         
-        SMMF=MS*(1-pow((1-Fr),1/EX));
+        SMMF=MS*(1-pow((1-Fr)+0.001,1/EX));
       }
       
       SMF=SMMF/(1+EX);
       
       for(i=1;i<=numIntoS;i++){
-        
-        Au=SMMF*(1-pow((1-S/SMF),1/(1+EX)));
+        S=S0*Fr0/Fr;      //the initial value of S0 and Fro is worth taking care of 
+        if(S>SMF) S=SMF;
+        Au=SMMF*(1-pow((1-S/(SMF+0.001)),1/(1+EX)));
         
         if(Pedt +Au <=0){
           Rsd=0;
@@ -146,6 +151,8 @@ void ER(double E,double P){
         Rs=Rs+Rsd;
         Ri=Ri+Rid;
         Rg=Rg+Rgd;
+        
+//        fprintf(fp,"**%f %f %f %f %f %f %f %f %f \n",S0,S,SMF,SMMF,Pedt,Au,Rsd,Rid,Rgd);
         
       }
       Rs=Rs*(1-IM);
@@ -177,10 +184,11 @@ void ER(double E,double P){
       Qg0=Qg;
       
     }
-
+  // fprintf(fp,"%f %f %f %f %f %f \n",WMM,W,WM,B,EX,MS);
+  // fprintf(fp,"%f %f ",R,Pe);
+  // fprintf(fp,"%f %f %f %f %f %d %f %f \n",E,P,A,Fr0,Fr,numIntoS,KIdt,KGdt);
+  // 
   
-  
-  
-  fprintf(fp,"%f %f %f %f %f %f %f %f %f \n",Wu,Wl,Wd,Eu,El,Ed,Rs,Ri,Rg);
-  
+//  fprintf(fp,"%f %f %f %f %f %f %f %f %f \n",Wu,Wl,Wd,Eu,El,Ed,Rs,Ri,Rg);
+ //fprintf(fp,"%f %f %f %f %f %f %f %f %f \n",Wu,Wl,Wd,Eu,El,Ed,Qs,Qi,Qg);
 }

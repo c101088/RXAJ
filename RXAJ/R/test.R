@@ -1,7 +1,7 @@
 library(Rcpp)
 setwd("E:/RXAJ/RXAJ/src")
 
-
+sourceCpp("test.cpp")
 test<-function(T){
   
   res<-.Call("test",T)

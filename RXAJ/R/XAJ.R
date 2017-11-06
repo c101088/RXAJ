@@ -6,19 +6,21 @@ library(recharts)
 
 sourceCpp("dXAJ.cpp")
 dXAJ<-function(modelParameter,basinInfo,basinData){
-  
+  # browser()
   dayResult<-.Call("dXAJ",modelParameter,basinInfo,basinData)
-  
+#  View(dayResult[[1]])
+#  print("666!")
+
   # totalR<-dayResult[[12]]
   # totalR<-totalR*24*3.6
   # sumResult<-as.data.frame(basinData[[4]]$Date,dayResult[[11]],dayResult[[10]],totalR,dayResult[[4]][-1,])
   # sumResultBalance<-sumResult
   # sumResultBalance$Date<-year(sumResultBalance$Date)
   # sumResultBalance<-melt(sumResultBalance,id=c("Date"))
-  # sumResultBalance<-dcast(sumResultBalance,Date~variable,sum) 
-  # 
-  # showResult(sumResult)
-  # 
+  # sumResultBalance<-dcast(sumResultBalance,Date~variable,sum)
+  # View(sumResult)
+  showResult(basinData[[4]]$Date,dayResult[[11]],dayResult[[12]],basinData[[5]]$Qmea)
+
   return()
 }
 
@@ -32,13 +34,13 @@ hXAJ<-function(modelParameter,basinInfo,basinData){
 }
 
 
-showResult<-function(sumResult){
+showResult<-function(Date,P,Qcal,Qmea){
   
   ext<-list(
     
     xAxis=list(
       type="category",
-      data=sumResult$Date
+      data=Date
       
     ),
     
@@ -60,14 +62,14 @@ showResult<-function(sumResult){
       list(
         name= "Qmea",
         type ="line",
-        data = sumResult$Qmea,
+        data = Qmea,
         yAxisIndex = "0"
         
       ),
       list(
         name= "Qcal",
         type ="line",
-        data = sumResult$Qcal,
+        data = Qcal,
         yAxisIndex = "0"
         
         
@@ -75,7 +77,7 @@ showResult<-function(sumResult){
       list(
         name = "precipitation",
         type="bar",
-        data = sumResult$P,
+        data =P,
         yAxisIndex = "1"
         
         
