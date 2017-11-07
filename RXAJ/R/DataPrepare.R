@@ -2,7 +2,7 @@
 
 ##The model parameter
 parameterName<-c("KC","UM","LM","C","WM","B","IM","SM","EX","KG","KI","CI","CG","CS","L","KE","XE")
-dayParameterValue<-c(0.6,20,90,0.08,180,0.3,0.03,10,1.2,0.4,0.3,0.7,0.995,0.2,0,24,0.35)
+dayParameterValue<-c(0.6,20,90,0.08,180,0.3,0.03,10,1.2,0.4,0.3,0.7,0.995,0.35,0,24,0.35)
 hourParameterValue<-c(0.6,20,90,0.08,180,0.3,0.03,10,1.2,0.35,0.35,0.65,0.998,0.085,0,1,0.35)
 
 modelPapameter<-data.frame(dayParameterValue,hourParameterValue)
@@ -232,3 +232,5 @@ hhData<-list(modelPapameter,basinInfo,dayData,floodData1,floodData2,floodData3,f
                 ,floodData6,floodData7,floodData8,floodData9,floodData10,floodData11,floodData12,floodData13,floodData14,floodData15)
 # hh.names<-strsplit("modelPapameter,basinInfo,dayData,floodData1,floodData2,floodData3,floodData4,floodData5,floodData6,floodData7,floodData8,floodData9,floodData10,floodData11,floodData12,floodData13,floodData14,floodData15",",")
 # names(hhData)<-hh.names
+setwd("E:/RXAJ/RXAJ/src")
+save(hhData,file = "hhData")

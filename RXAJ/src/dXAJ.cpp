@@ -58,6 +58,20 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   Rcpp::NumericVector subQ(numT);
   Rcpp::NumericVector msjgQ(numT);
   
+  outW[numT]=0;
+  for(i = 0 ;i<numT;i++){
+    for(j=0;j<numSub;j++){
+      outWu(i,j)=0;outWl(i,j)=0;outWd(i,j)=0;
+      outQs0(i,j)=0;outQi0(i,j)=0;outQg0(i,j)=0;
+      outFr0(i,j)=0;outS0(i,j)=0;
+    }
+    outE[i]=0;
+    outP[i]=0;
+    outW[i]=0;
+    subQ[i]=0;
+    msjgQ[i]=0;
+  }
+  
   DM=WM-UM-LM;
   WMM=(1+B)*WM/(1-IM);
   MS=(1+EX)*SM;  
