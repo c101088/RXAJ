@@ -1,4 +1,4 @@
-library(recharts)
+# library(recharts)
 
 showResult<-function(Date,P,Qcal,Qmea){
   
@@ -14,17 +14,17 @@ showResult<-function(Date,P,Qcal,Qmea){
       list(
         type ="value",
         name="流量(m3·s-1)",
-        splitNumber="6",
+        splitNumber="5",
         min = "0",
-        max ="2000"
+        max ="1000"
       ),
       list(
         type = "value",
         name = "降雨量(mm)",
         inverse="true",
-        splitNumber ="6",
+        splitNumber ="5",
         min ="0",
-        max = "120"
+        max = "250"
       )
       
     )
@@ -59,3 +59,14 @@ showResult<-function(Date,P,Qcal,Qmea){
   
   ePlot(series,ext)
 }
+
+NSE<-function(Qcal,Qmea){
+  
+  return(1-sum((Qmea-Qcal)^2)/sum((Qmea-mean(Qmea))^2))
+  
+  
+}
+
+q1<-c(1,2,3,4,5)
+q2<-c(5,4,3,2,1)
+NSE(q1,q2)

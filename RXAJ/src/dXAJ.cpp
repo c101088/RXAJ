@@ -54,11 +54,10 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   Rcpp::NumericMatrix outS0(numT,numSub);
   Rcpp::NumericVector outE(numT);
   Rcpp::NumericVector outP(numT);
-  Rcpp::NumericVector outW(numT+1);
+  Rcpp::NumericVector outW(numT);
   Rcpp::NumericVector subQ(numT);
   Rcpp::NumericVector msjgQ(numT);
   
-  outW[numT]=0;
   for(i = 0 ;i<numT;i++){
     for(j=0;j<numSub;j++){
       outWu(i,j)=0;outWl(i,j)=0;outWd(i,j)=0;
@@ -70,6 +69,7 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     outW[i]=0;
     subQ[i]=0;
     msjgQ[i]=0;
+    stationQcal[i]=0;
   }
   
   DM=WM-UM-LM;
@@ -108,7 +108,7 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
       outWd(iT,iSub)=Wd;
       outE[iT]=outE[iT]+(El+Eu+Ed)*weightVal;
       outP[iT]=outP[iT]+stationP[iT]*weightVal;
-      outW[iT+1]=outW[iT+1]+(Wu+Wl+Wd)*weightVal;
+      outW[iT]=outW[iT]+(Wu+Wl+Wd)*weightVal;
       subQ[iT]=Qs+Qi+Qg;
       
 //      fprintf(fp,"%f %f %f %f\n",E,P,Wu,subQ[iT]);
@@ -165,29 +165,19 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
         fprintf(fp,"%f \n",stationQcal[i]);
      
     }
-    if(abs(iSub-numSub)<0.001){
-      outW[0] = initialW;
-      for(i=numT+1;i>=1;i--){
+    if(iSub==(numSub-1)){
+      for(i=numT-1;i>=1;i--){
         outW[i] = outW[i]-outW[i-1];
         
       }  
+      outW[0]=outW[0]-initialW;
       
     }    
     
     
     
   }
- // browser();
-  // for(i = 0 ;i<numT;i++){
-  //   if(i%10 ==0){
-  //     printf("%f \n",stationQcal[i]);
-  //   }else{
-  //     printf("%f ",stationQcal[i]);
-  //   }
-  //   
-  // }
-  
-  
+
   fclose(fp);
   printf("*****the loop is over!!*****\n");
 
