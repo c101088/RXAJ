@@ -67,6 +67,31 @@ NSE<-function(Qcal,Qmea){
   
 }
 
-q1<-c(1,2,3,4,5)
-q2<-c(5,4,3,2,1)
-NSE(q1,q2)
+changeModelParameter<-function(parameterValue,paraIndex,value){
+  parameterName<-c("KC","UM","LM","C","WM","B","IM","SM","EX","KG","KI","CI","CG","CS","L","KE","XE")
+  funFlag = FALSE
+  if (length(parameterValue)!= 17){
+    
+    stop("The parameterValue is not correct!!")
+  }
+  
+  
+  if (!is.numeric(value)){
+    
+    stop("The value should be numeric!")
+  }
+  for(i in 1:length(parameterValue)){
+    if(parameterName[i]==paraIndex){
+      funFlag = TRUE
+      parameterValue[i]<-value
+    }
+    
+    
+  }
+  if(funFlag ==FALSE){
+    stop("The paraIndex is not correct,please check the uppercase!")
+    
+  }
+  return(parameterValue)
+}
+
