@@ -230,7 +230,25 @@ floodData15<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue)
 # names(floodData15)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
 hhData<-list(modelPapameter,basinInfo,dayData,floodData1,floodData2,floodData3,floodData4,floodData5
                 ,floodData6,floodData7,floodData8,floodData9,floodData10,floodData11,floodData12,floodData13,floodData14,floodData15)
-# hh.names<-strsplit("modelPapameter,basinInfo,dayData,floodData1,floodData2,floodData3,floodData4,floodData5,floodData6,floodData7,floodData8,floodData9,floodData10,floodData11,floodData12,floodData13,floodData14,floodData15",",")
-# names(hhData)<-hh.names
+hh.names<-strsplit("modelPapameter,basinInfo,dayData,floodData1,floodData2,floodData3,floodData4,floodData5,floodData6,floodData7,floodData8,floodData9,floodData10,floodData11,floodData12,floodData13,floodData14,floodData15",",")
+names(hhData)<-hh.names[[1]]
+
+hhData[[3]]$dayStart<-ymd(hhData[[3]]$dayStart)
+hhData[[3]]$dayEnd<-ymd(hhData[[3]]$dayEnd)
+hhData[[3]]$dayE$Date<-ymd(hhData[[3]]$dayE$Date)
+hhData[[3]]$dayP$Date<-ymd(hhData[[3]]$dayP$Date)
+hhData[[3]]$dayQ$Date<-ymd(hhData[[3]]$dayQ$Date)
+
+for(i in 4:18){
+  hhData[[i]]$timeStart<-ymd_hms(hhData[[i]]$timeStart)
+  hhData[[i]]$timeEnd<-ymd_hms(hhData[[i]]$timeEnd)
+  hhData[[i]]$hourE$YMDHM<-ymd_hms(hhData[[i]]$hourE$YMDHM)
+  hhData[[i]]$hourP$YMDHM<-ymd_hms(hhData[[i]]$hourP$YMDHM)
+  hhData[[i]]$hourQ$YMDHM<-ymd_hms(hhData[[i]]$hourQ$YMDHM)
+  
+  
+  
+}
+
 setwd("E:/RXAJ/RXAJ/src")
 save(hhData,file = "hhData")

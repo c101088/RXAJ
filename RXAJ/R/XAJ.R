@@ -23,14 +23,37 @@ dXAJ<-function(modelParameter,basinInfo,basinData){
   sumResultBalance<-dcast(sumResultBalance,Date~variable,sum)
   sumResultBalance[,6]<-sumResultBalance[,2]-sumResultBalance[,3]-sumResultBalance[,4]-sumResultBalance[,5]
   colnames(sumResultBalance)[6]<-"sum"
+  View(sumResultBalance)
   save(sumResultBalance,file = "sumResultBalance")
-  
-  return(dayResult)
+  save(dayResult,file = "dayResult")
+
+  resultData<-data.frame(basinData[[4]]$Date,dayResult[[11]],dayResult[[12]],basinData[[5]]$Qmea)
+  colnames(resultData)<-c("Date","P","Qcal","Qmea")
+  return(resultData)
 }
 
-dayResult<-dXAJ(modelParameter =hhData[[1]]$dayParameterValue,basinInfo = hhData[[2]],basinData = hhData[[3]])
-NSE(dayResult$stationQcal,basinData[[5]]$Qmea)
-showResult(basinData[[4]]$Date[1:365],dayResult[[11]][1:365],dayResult[[12]][1:365],basinData[[5]]$Qmea[1:365])
+initHourData<-function(dayStart,floodData){
+  if(!load(dayReasult)){
+    
+    stop("Error in read the Day Model Result ,please run the follow check list:\n 1.set the workstation \n 2.run the dayModel")
+
+  }
+  
+  
+  numDiff<-difftime(floodData$timeStart,dayStart,units = "days")
+  
+  floodData$initialValue$WU<-dayResult$outWu[numDiff,]
+  floodData$initialValue$WL<-dayResult$outWl[numDiff,]
+  floodData$initialValue$WD<-dayResult$outWd[numDiff,]
+  floodData$initialValue$QS<-dayResult$outQs0[numDiff,]
+  floodData$initialValue$QI<-dayResult$outQi0[numDiff,]
+  floodData$initialValue$QG<-dayResult$outQg0[numDiff,]
+  floodData$initialValue$S0<-dayResult$outS0[numDiff,]
+  floodData$initialValue$Fr0<-dayResult$outFr0[numDiff,]
+
+}
+
+
 # 
 # hXAJ<-function(modelParameter,basinInfo,basinData){
 #   

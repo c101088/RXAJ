@@ -96,7 +96,7 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     reachSub=stationInfo[1];
     initQ=weightVal*stationQmea[0];
     RtoQ=weightVal*basinArea/3.6/dlt;
-    printf("****%f %f %f *******\n",Wu,S0,Fr0);
+//    printf("****%f %f %f *******\n",Wu,S0,Fr0);
     initialW= initialW+(Wu+Wl+Wd)*weightVal;    //initialW is used for calculate  the water balance
     for(iT=0;iT<numT;iT++){
       P=(stationP[iT]);
