@@ -106,6 +106,11 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
       outWu(iT,iSub)=Wu;
       outWl(iT,iSub)=Wl;
       outWd(iT,iSub)=Wd;
+      outQs0(iT,iSub)=Qs0;
+      outQi0(iT,iSub)=Qi0;
+      outQg0(iT,iSub)=Qg0;
+      outS0(iT,iSub)=S0;
+      outFr0(iT,iSub)=Fr0;
       outE[iT]=outE[iT]+(El+Eu+Ed)*weightVal;
       outP[iT]=outP[iT]+stationP[iT]*weightVal;
       outW[iT]=outW[iT]+(Wu+Wl+Wd)*weightVal;

@@ -8,6 +8,7 @@ library(lubridate)
 
 sourceCpp("dXAJ.cpp")
 
+
 dXAJ<-function(modelParameter,basinInfo,basinData){
   # browser()
   cat("The simulation started from ",as.character(basinData[[1]])," and ended at ",as.character(basinData[[2]]),"\n")
@@ -33,31 +34,27 @@ dXAJ<-function(modelParameter,basinInfo,basinData){
 }
 
 initHourData<-function(dayStart,floodData){
-  if(!load(dayReasult)){
+  try(load("dayResult"),stop("Error in read the Day Model Result ,please run the follow check list:\n 1.set the workstation \n 2.run the dayModel"))
     
-    stop("Error in read the Day Model Result ,please run the follow check list:\n 1.set the workstation \n 2.run the dayModel")
-
-  }
-  
-  
-  numDiff<-difftime(floodData$timeStart,dayStart,units = "days")
-  
-  floodData$initialValue$WU<-dayResult$outWu[numDiff,]
-  floodData$initialValue$WL<-dayResult$outWl[numDiff,]
-  floodData$initialValue$WD<-dayResult$outWd[numDiff,]
-  floodData$initialValue$QS<-dayResult$outQs0[numDiff,]
-  floodData$initialValue$QI<-dayResult$outQi0[numDiff,]
-  floodData$initialValue$QG<-dayResult$outQg0[numDiff,]
-  floodData$initialValue$S0<-dayResult$outS0[numDiff,]
-  floodData$initialValue$Fr0<-dayResult$outFr0[numDiff,]
+  numDiff<-floor(difftime(floodData$timeStart,dayStart,units = "days"))
+  cat(numDiff)
+  floodData$initialValue[1,]<-dayResult$outWu[numDiff,]
+  floodData$initialValue[2,]<-dayResult$outWl[numDiff,]
+  floodData$initialValue[3,]<-dayResult$outWd[numDiff,]
+  floodData$initialValue[4,]<-dayResult$outQs0[numDiff,]
+  floodData$initialValue[5,]<-dayResult$outQi0[numDiff,]
+  floodData$initialValue[6,]<-dayResult$outQg0[numDiff,]
+  floodData$initialValue[7,]<-dayResult$outS0[numDiff,]
+  floodData$initialValue[8,]<-dayResult$outFr0[numDiff,]
+  return(floodData)
 
 }
 
 
-# 
-# hXAJ<-function(modelParameter,basinInfo,basinData){
-#   
-#   res<-.Call("hXAJ",modelParameter,basinInfo,basinData)
-#   
-#   
-# }
+sourceCpp("hXAJ.cpp")
+hXAJ<-function(modelParameter,basinInfo,basinData){
+
+  res<-.Call("hXAJ",modelParameter,basinInfo,basinData)
+
+
+}
