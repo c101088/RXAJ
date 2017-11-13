@@ -10,7 +10,7 @@ RcppExport SEXP hXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   Rcpp::List basinInfo2(basinInfo1);
   Rcpp::List basinData(basinData1);
   
-  
+  fp=fopen("123.txt","w");
   Rcpp::DataFrame basinInfo(basinInfo2[0]);
   basinArea = Rcpp::as<double>(basinInfo2[1]);
   Rcpp::DataFrame dayE(basinData[2]);
@@ -22,7 +22,7 @@ RcppExport SEXP hXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   Rcpp::Function ncol("ncol");
   
   int dlt =1;                                   //The dlt of dayModel is setted to 24 hours.
-  int iT,iSub,i,j;
+  int iT,iSub,i,j,csFlag=0;
   int numT,numSub,reachSub;
   double E,P,initialW=0,weightVal,C0,C1,C2;
   
@@ -44,7 +44,7 @@ RcppExport SEXP hXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   
 
   Rcpp::NumericVector outP(numT);
-
+  Rcpp::NumericVector tempSubQ(numT);
   Rcpp::NumericVector subQ(numT);
   Rcpp::NumericVector msjgQ(numT);
   
@@ -52,6 +52,7 @@ RcppExport SEXP hXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
 
     outP[i]=0;
     subQ[i]=0;
+    tempSubQ[i]=0;
     msjgQ[i]=0;
     stationQcal[i]=0;
   }
@@ -75,7 +76,7 @@ RcppExport SEXP hXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     Qg0=stationInit[5];
     S0=stationInit[6];
     Fr0=stationInit[7];
-    
+    csFlag = 0;
     weightVal=stationInfo[0];
     reachSub=stationInfo[1];
     initQ=weightVal*stationQmea[0];
@@ -89,33 +90,46 @@ RcppExport SEXP hXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
       
     
       outP[iT]=outP[iT]+stationP[iT]*weightVal;
-      subQ[iT]=Qs+Qi+Qg;
-      
+      tempSubQ[iT]=Qs+Qi+Qg;
+
+   //   fprintf(fp,"%f \n",subQ[iT]);
       //      fprintf(fp,"%f %f %f %f\n",E,P,Wu,subQ[iT]);
     }
     
+    for (i =0 ;i<numT;i++){
+      if(csFlag ==0){
+        if(initQ > tempSubQ[i-1]) {
+          tempSubQ[i-1]= initQ;
+        }else{
+          csFlag =1;
+        } 
+      }
+      
+      fprintf(fp,"%d , %f \n",csFlag,tempSubQ[i]);
+    }
+    
     for(i=0;i<numT;i++){          //as a DayModel ,L should be 0.
+
       if((i-L)<0){
-        if(abs(i)<0.001) {
+        if(i==0) {
           subQ[i]=initQ;
         }else{
-          subQ[i]=initQ*(1-CS)+CS*subQ[i-1];
+          subQ[i]=initQ*(1-CS)+CS*tempSubQ[i-1];
         }
         
       }else{
-        if(abs(i)<0.001){
+        if(i==0){
           subQ[i]=initQ;
         }else{
-          subQ[i]=subQ[i-L]*(1-CS)+CS*subQ[i-1];
+          subQ[i]=tempSubQ[i-L]*(1-CS)+CS*tempSubQ[i-1];
         }
         
-        
+
       }
-      
-      
+
     }
     
-    
+    fprintf(fp,"******\n");
     
  //   reachSub=1;                             //As a day model ,the number of Sub-basin reach should be 1.
     
@@ -152,7 +166,7 @@ RcppExport SEXP hXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   
   Rcpp::List resultData = Rcpp::List::create(Rcpp::Named("outP") = outP,
                                              Rcpp::Named("stationQcal") = stationQcal);
-  
+  fclose(fp);
   return(resultData);
 }
 

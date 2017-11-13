@@ -56,6 +56,7 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   Rcpp::NumericVector outP(numT);
   Rcpp::NumericVector outW(numT);
   Rcpp::NumericVector subQ(numT);
+  Rcpp::NumericVector tempSubQ(numT);
   Rcpp::NumericVector msjgQ(numT);
   
   for(i = 0 ;i<numT;i++){
@@ -68,6 +69,7 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     outP[i]=0;
     outW[i]=0;
     subQ[i]=0;
+    tempSubQ[i]=0;
     msjgQ[i]=0;
     stationQcal[i]=0;
   }
@@ -114,8 +116,8 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
       outE[iT]=outE[iT]+(El+Eu+Ed)*weightVal;
       outP[iT]=outP[iT]+stationP[iT]*weightVal;
       outW[iT]=outW[iT]+(Wu+Wl+Wd)*weightVal;
-      subQ[iT]=Qs+Qi+Qg;
-      
+      tempSubQ[iT]=Qs+Qi+Qg;
+    
 //      fprintf(fp,"%f %f %f %f\n",E,P,Wu,subQ[iT]);
     }
     
@@ -124,14 +126,24 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
         if(abs(i)<0.001) {
           subQ[i]=initQ;
         }else{
-          subQ[i]=initQ*(1-CS)+CS*subQ[i-1];
+          if(csFlag ==0){
+            if(initQ> tempSubQ[i-1]) {
+              tempSubQ[i-1]= initQ;
+            }else{csFlag =1;} 
+          }
+          subQ[i]=initQ*(1-CS)+CS*tempSubQ[i-1];
         }
         
       }else{
         if(abs(i)<0.001){
           subQ[i]=initQ;
         }else{
-          subQ[i]=subQ[i-L]*(1-CS)+CS*subQ[i-1];
+          if(csFlag ==0){
+            if(initQ> tempSubQ[i-1]) {
+              tempSubQ[i-1]= initQ;
+            }else{csFlag =1;} 
+          }
+          subQ[i]=tempSubQ[i-L]*(1-CS)+CS*tempSubQ[i-1];
         }
         
         
@@ -139,7 +151,6 @@ RcppExport SEXP dXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
       
       
     }
-    
     
     
     reachSub=1;                             //As a day model ,the number of Sub-basin reach should be 1.
