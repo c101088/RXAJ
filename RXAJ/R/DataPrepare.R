@@ -4,7 +4,7 @@
 parameterName<-c("KC","UM","LM","C","WM","B","IM","SM","EX","KG","KI","CI","CG","CS","L","KE","XE")
 dayParameterValue<-c(0.6,20,90,0.08,180,0.3,0.03,10,1.2,0.4,0.3,0.7,0.995,0.35,0,24,0.35)
 hourParameterValue<-c(0.6,20,90,0.08,180,0.3,0.03,10,1.2,0.35,0.35,0.65,0.998,0.085,0,1,0.35)
-
+ 
 modelPapameter<-data.frame(dayParameterValue,hourParameterValue)
 rownames(modelPapameter)<-parameterName
 
@@ -24,7 +24,8 @@ basinInfo<-list(basinInfo,basinArea)
 
 
 library(RODBC)
-mycon<-odbcConnectAccess2007("E:/Rlanguage/data.mdb")
+#mycon<-odbcConnect("hehei")
+mycon<-odbcConnectAccess("E:/Rlanguage/data.mdb")
 dayEv<-sqlFetch(mycon,"ST_DAYEV")
 dayQ<-sqlFetch(mycon,"ST_DAYRIVER")
 dayRain<-sqlFetch(mycon,"ST_DAYRNFL")
@@ -40,7 +41,7 @@ hourRain$YMDHM<-as.POSIXct(hourRain$YMDHM)
 
 ##hourRain$YMDHM<-as.POSIXct(hourRain$YMDHM,format="%Y-%m-%d %H:%M:%S")
 library(reshape2)
-
+library(lubridate)
 dayStart<-as.POSIXct("2003-1-1")
 dayEnd<-as.POSIXct("2012-12-31")
 dayEv$YMDHM<-strptime(dayEv$YMDHM,format = "%Y-%m-%d")
@@ -212,22 +213,22 @@ hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0) & (difftime(t
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData15<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
-# 
-# names(floodData1)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData2)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData3)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData4)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData5)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData6)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData7)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData8)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData9)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData10)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData11)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData12)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData13)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData14)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
-# names(floodData15)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+
+names(floodData1)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData2)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData3)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData4)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData5)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData6)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData7)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData8)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData9)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData10)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData11)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData12)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData13)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData14)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
+names(floodData15)<-c("timeStart","timeEnd","hourE","hourP","hourQ","initialValue")
 hhData<-list(modelPapameter,basinInfo,dayData,floodData1,floodData2,floodData3,floodData4,floodData5
                 ,floodData6,floodData7,floodData8,floodData9,floodData10,floodData11,floodData12,floodData13,floodData14,floodData15)
 hh.names<-strsplit("modelPapameter,basinInfo,dayData,floodData1,floodData2,floodData3,floodData4,floodData5,floodData6,floodData7,floodData8,floodData9,floodData10,floodData11,floodData12,floodData13,floodData14,floodData15",",")
