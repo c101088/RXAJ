@@ -22,7 +22,8 @@ basinInfo<-list(basinInfo,basinArea)
 ##The model time-control
 ##The colname of floodInfo is the index number of each flood
 
-
+library(reshape2)
+library(lubridate)
 library(RODBC)
 #mycon<-odbcConnect("hehei")
 mycon<-odbcConnectAccess("E:/Rlanguage/data.mdb")
@@ -33,19 +34,22 @@ hourEv<-sqlFetch(mycon,"ST_EV")
 hourQ<-sqlFetch(mycon,"ST_RIVER")
 
 odbcClose(mycon)
+dayEv$YMDHM<-ymd(dayEv$YMDHM)
+dayQ$YMDHM<-ymd(dayQ$YMDHM)
+dayRain$YMDHM<-ymd(dayRain$YMDHM)
 
-dayEv$YMDHM<-as.Date(dayEv$YMDHM)
+
 hourRain<-read.csv("E:/Rlanguage/ST_RNFL.CSV",encoding = "UTF-8")
 colnames(hourRain)[1]<-"STCD"
-hourRain$YMDHM<-as.POSIXct(hourRain$YMDHM)
+hourRain$YMDHM<-ymd_hm(hourRain$YMDHM)
 
 ##hourRain$YMDHM<-as.POSIXct(hourRain$YMDHM,format="%Y-%m-%d %H:%M:%S")
-library(reshape2)
-library(lubridate)
-dayStart<-as.POSIXct("2003-1-1")
-dayEnd<-as.POSIXct("2012-12-31")
-dayEv$YMDHM<-strptime(dayEv$YMDHM,format = "%Y-%m-%d")
+
+dayStart<-ymd("2003-1-1")
+dayEnd<-ymd("2012-12-31")
+##dayEv$YMDHM<-strptime(dayEv$YMDHM,format = "%Y-%m-%d")
 data1<-dcast(data = dayEv,YMDHM~STCD,value.var = "EA")
+data1$YMDHM<-ymd(data1$YMDHM)
 dayE<-data1[(difftime(dayEnd,data1$YMDHM,units = "days")>=0) & (difftime(dayStart,data1$YMDHM,units = "days")<=0),1:2]
 colnames(dayE)<-c("Date","stationE")
 
@@ -95,120 +99,120 @@ colnames(dataQ)<-c("YMDHM","Qmea","Qcal")
 colnames(dataP)<-c("YMDHM","stationP1","stationP2","stationP3","stationP4","stationP5","stationP6","stationP7","stationP8","stationP9")
 
 
-timeStart<-as.POSIXct("2003-8-26 22:00:00")
-timeEnd<-as.POSIXct("2003-9-3 19:00:00")
+timeStart<-ymd_hms("2003-8-26 22:00:00")
+timeEnd<-ymd_hms("2003-9-3 19:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData1<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
-timeStart<-as.POSIXct("2003-9-3 19:00:00")
-timeEnd<-as.POSIXct("2003-9-9 12:00:00")
+timeStart<-ymd_hms("2003-9-3 19:00:00")
+timeEnd<-ymd_hms("2003-9-9 12:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData2<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue)
 
 
-timeStart<-as.POSIXct("2003-9-17 11:00:00 ")
-timeEnd<-as.POSIXct("2003-9-24 8:00:00")
+timeStart<-ymd_hms("2003-9-17 11:00:00 ")
+timeEnd<-ymd_hms("2003-9-24 8:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData3<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
-timeStart<-as.POSIXct("2004-9-2 14:00:00")
-timeEnd<-as.POSIXct("2004-9-11 2:00:00")
+timeStart<-ymd_hms("2004-9-2 14:00:00")
+timeEnd<-ymd_hms("2004-9-11 2:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData4<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
-timeStart<-as.POSIXct("2005-7-1 6:00:00")
-timeEnd<-as.POSIXct("2005-7-8 1:00:00")
+timeStart<-ymd_hms("2005-7-1 6:00:00")
+timeEnd<-ymd_hms("2005-7-8 1:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData5<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
-timeStart<-as.POSIXct("2005-9-25 20:00:00")
-timeEnd<-as.POSIXct("2005-10-5 18:00:00")
+timeStart<-ymd_hms("2005-9-25 20:00:00")
+timeEnd<-ymd_hms("2005-10-5 18:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData6<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
-timeStart<-as.POSIXct("2006-9-3 8:00:00")
-timeEnd<-as.POSIXct("2006-9-7 9:00:00")
+timeStart<-ymd_hms("2006-9-3 8:00:00")
+timeEnd<-ymd_hms("2006-9-7 9:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData7<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
-timeStart<-as.POSIXct("2006-9-25 7:00:00")
-timeEnd<-as.POSIXct("2006-10-2 4:00:00")
+timeStart<-ymd_hms("2006-9-25 7:00:00")
+timeEnd<-ymd_hms("2006-10-2 4:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData8<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
-timeStart<-as.POSIXct("2007-7-4 4:00:00")
-timeEnd<-as.POSIXct("2007-7-10 21:00:00")
+timeStart<-ymd_hms("2007-7-4 4:00:00")
+timeEnd<-ymd_hms("2007-7-10 21:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData9<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
-timeStart<-as.POSIXct("2008-7-19 9:00:00")
-timeEnd<-as.POSIXct("2008-7-25 3:00:00")
+timeStart<-ymd_hms("2008-7-19 9:00:00")
+timeEnd<-ymd_hms("2008-7-25 3:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData10<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
-timeStart<-as.POSIXct("2009-8-18 14:00:00")
-timeEnd<-as.POSIXct("2009-8-25 1:00:00")
+timeStart<-ymd_hms("2009-8-18 14:00:00")
+timeEnd<-ymd_hms("2009-8-25 1:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData11<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
-timeStart<-as.POSIXct("2010-7-15 8:00:00")
-timeEnd<-as.POSIXct("2010-7-21 1:00:00")
+timeStart<-ymd_hms("2010-7-15 8:00:00")
+timeEnd<-ymd_hms("2010-7-21 1:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData12<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
-timeStart<-as.POSIXct("2010-7-21 1:00:00")
-timeEnd<-as.POSIXct("2010-7-27 8:00:00")
+timeStart<-ymd_hms("2010-7-21 1:00:00")
+timeEnd<-ymd_hms("2010-7-27 8:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData13<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
-timeStart<-as.POSIXct("2010-8-18 20:00:00")
-timeEnd<-as.POSIXct("2010-8-22 18:00:00")
+timeStart<-ymd_hms("2010-8-18 20:00:00")
+timeEnd<-ymd_hms("2010-8-22 18:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0)& (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
 floodData14<-list(timeStart,timeEnd,hourE,hourP,hourQ,initialValue) 
 
 
-timeStart<-as.POSIXct("2010-8-22 18:00:00")
-timeEnd<-as.POSIXct("2010-8-27 15:00:00")
+timeStart<-ymd_hms("2010-8-22 18:00:00")
+timeEnd<-ymd_hms("2010-8-27 15:00:00")
 hourE<-dataE[((difftime(timeStart,dataE$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataE$YMDHM,units="hours")>=0) ),1:ncol(dataE)]
 hourQ<-dataQ[(difftime(timeStart,dataQ$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataQ$YMDHM,units="hours")>=0),1:ncol(dataQ)]
 hourP<-dataP[(difftime(timeStart,dataP$YMDHM,units = "hours")<=0) & (difftime(timeEnd,dataP$YMDHM,units="hours")>=0),1:ncol(dataP)]
