@@ -139,7 +139,6 @@ RcppExport SEXP hXAJ(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
       for(j=0;j<numT;j++){
         if(abs(j)<0.001){
           msjgQ[j]=C0*subQ[j]+C1*initQ+C2*initQ;
-          
         }else{
           msjgQ[j]=C0*subQ[j]+C1*subQ[j-1]+C2*msjgQ[j-1];
           

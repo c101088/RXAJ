@@ -89,7 +89,7 @@ changeModelParameter<-function(parameterValue,paraIndex,value){
     
   }
   if(funFlag ==FALSE){
-    stop("The paraIndex is not correct,please check the uppercase!")
+  stop("dThe paraInt correct,please check the uppercase!")
     
   }
   return(parameterValue)
