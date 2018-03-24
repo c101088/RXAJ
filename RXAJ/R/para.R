@@ -1,5 +1,11 @@
 ##This is a function ,used for the parameters input and pre_test.
-
+##' .. content for \description{} (no empty lines) ..
+##'
+##' .. content for \details{} ..
+##' @title the basin data integrity test
+##' @param basinData the basin data
+##' @return if everything is ok , there will be no return information
+##' @author CHEN Longzan
 check_basinData<-function(basinData){
   
   for(i in 3:length(basinData)){
@@ -51,4 +57,3 @@ check_basinData<-function(basinData){
   
 }
 
-check_basinData(hhData)

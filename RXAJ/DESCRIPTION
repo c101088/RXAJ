@@ -1,11 +1,16 @@
 Package: RXAJ
 Type: Package
-Title: What the Package Does in One 'Title Case' Line
+Title: The Xinanjiang hydrology model in R language 
 Version: 1.0
 Date: 2017-10-23
-Author: Your Name
-Maintainer: Your Name <your@email.com>
-Description: One paragraph description of what the package does as one or more full sentences.
+Author: CHEN Longzan 
+Maintainer: CHEN Longzan <15950502686@163.com>
+Description: This package may help you finish such as organizing the model data ,calculating the model and showing up the result.
 License: GPL (>= 2)
+Depends: recharts,reshape2,lubridate
 Imports: Rcpp (>= 0.12.13)
 LinkingTo: Rcpp
+RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
