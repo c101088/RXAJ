@@ -263,9 +263,7 @@ RcppExport SEXP dXAJc(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
   DM=WM-UM-LM;
   WMM=(1+B)*WM/(1-IM);
   MS=(1+EX)*SM;  
-  Rcpp::Function browser("browser");
-//  browser();
-  
+
   for(iSub=0 ;iSub<numSub;iSub++){
  //   printf("*************iSub = %d*******\n",iSub);
     Rcpp::NumericVector stationP(dayP[iSub+1]);  
@@ -284,7 +282,6 @@ RcppExport SEXP dXAJc(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     reachSub=stationInfo[1];
     initQ=Qs0+Qi0+Qg0;
     RtoQ=weightVal*basinArea/3.6/dlt;
-//    printf("****%f %f %f *******\n",Wu,S0,Fr0);
     initialW= initialW+(Wu+Wl+Wd)*weightVal;    //initialW is used for calculate  the water balance
     for(iT=0;iT<numT;iT++){
       P=(stationP[iT]);

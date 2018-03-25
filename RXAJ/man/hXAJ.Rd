@@ -2,19 +2,19 @@
 % Please edit documentation in R/hXAJ.r
 \name{hXAJ}
 \alias{hXAJ}
-\title{the hour model of XAJ model}
+\title{The flood model of XAJ model}
 \usage{
-hXAJ(modelParameter, basinInfo, basinData)
+hXAJ(hourModelParameter, basinInfo, floodData)
 }
 \arguments{
-\item{modelParameter}{the model parameter}
+\item{hourModelParameter}{the model parameter}
 
 \item{basinInfo}{the basin information}
 
-\item{basinData}{the hour model data series}
+\item{floodData}{the hour model data series}
 }
 \value{
-the hour model result series
+floodResult: the hour model result series
 }
 \description{
 .. content for \description{} (no empty lines) ..

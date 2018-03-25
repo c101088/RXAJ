@@ -4,15 +4,17 @@ library(lubridate)
 ##' .. content for \description{} (no empty lines) ..
 ##'
 ##' .. content for \details{} ..
-##' @title the hour model of XAJ model
-##' @param modelParameter the model parameter
+##' @title The flood model of XAJ model
+##' @param hourModelParameter the model parameter
 ##' @param basinInfo the basin information
-##' @param basinData the hour model data series
-##' @return the hour model result series
+##' @param floodData the hour model data series
+##' @return floodResult: the hour model result series
 ##' @author CHEN Longzan 
-hXAJ<-function(modelParameter,basinInfo,basinData){
+hXAJ<-function(hourModelParameter,basinInfo,floodData){
+  cat("The simulation started from ",as.character(floodData[[1]])," and ended at ",as.character(floodData[[2]]),"\n")
+  floodResult<-.Call("hXAJc",PACKAGE = "RXAJ",hourModelParameter,basinInfo,floodData)
   
-  res<-.Call("hXAJc",PACKAGE = "RXAJ",modelParameter,basinInfo,basinData)
-  
-  
+  floodResult<-data.frame(floodData$hourQ$YMDHM,floodResult$outP,floodData1$hourQ$Qmea,floodResult$stationQcal)
+  colnames(floodResult)<-c("Date","P","Qmea","Qcal")
+  return(floodResult)
 }

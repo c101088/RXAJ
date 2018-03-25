@@ -8,85 +8,154 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+```{r}
+  load("E:\\RXAJ\\RXAJ\\.RData")
+```
 
-  RXAJ is a hydrology model package which coded by R script and C language. This package is used for simluating and precasting the outlet of basin(watershed,catchment), with the history discharge data, rainfall data and the sub-basin data. RXAJ has provided the following features:
+  RXAJ is a hydrology model package which coded by R script and C language. This package is used for simluating and precasting the outlet discharage of basin(watershed,catchment), with the history discharge data, rainfall data and the sub-basin data. RXAJ has provided the following features:
 
 # Data Management Module
 ## Data Structure figure
 <img src="E:\\oneDrive\\workOnHand\\RXAJ\\数据结构.bmp" />
-```{r, echo=FALSE, results='asis'}
+
+## modelParameter(dataframe)
+the modelParameter includes the day-model and flood-model parameter, showing as the following :
+
+```{r}
 knitr::kable(modelPapameter)
 ```
 
+## basinInfo(list)
+the basinInfo includes the sub-basin information and the basin area (km2),
+### sub-baisn(dataframe)
+the sub-basin information, which including the sub-basin area-weight and river-reach-number, was showing as the following :
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+```{r}
+knitr::kable(basinInfo[[1]])
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+### basin area(numeric)
+the baisn area is the whole basin area, which unit is square kilometers.
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+## dayData(list)
+the dayData includes dayStart,dayEnd,dayE,dayP,dayQ,initValue, which needed by the day model.
+### dayStart and dayEnd
+the dayStart is the start time of the day-model while the dayEnd means the end time of the day-model.A simple example is "2018-01-01".
+### dayE(dataframe)
+the dayE includes the whole basin evapotranspiration value and the  corresponding date.Showing as the following:
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r}
+knitr::kable(head(dayE,6))
 ```
 
-Also a quote using `>`:
+### dayP(dataframe)
+the dayP includes the sujb-baisn preciptation value and the corresponding date.Showing as the following:
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+```{r}
+knitr::kable(head(dayP,6))
+```
+
+### dayQ(dataframe)
+the dayQ includes the measured outlet discharge value and the corresponding date.Showing as the following:
+
+```{r}
+knitr::kable(head(dayQ,6))
+```
+
+### initValue(dataframe)
+the initValue includes the initial condition of day-model, showing as the following:
+
+```{r}
+knitr::kable(initialValue)
+```
+
+## floodData(list)
+the floodData is nearly similar as the dayData, including timeStart,timeEnd,hourE,hourP,hourQ,initValue.
+### hourStart and hourEnd
+the hourStart is the start time of the flood-model while the hourEnd means the end time of the flood-model.A simple example is "2018-01-01 08:00:00".
+### hourE
+the hourE includes the whole basin evapotranspiration value and the  corresponding date.Showing as the following:
+
+```{r}
+knitr::kable(head(floodData1$hourE,6))
+```
+
+### hourP
+the hourP includes the sujb-baisn preciptation value and the corresponding date.Showing as the following:
+
+```{r}
+knitr::kable(head(floodData1$hourP,6))
+```
+
+### hourQ
+the hourQ includes the measured and calculated outlet discharge value and the corresponding date, you may keep the calculated value be 0.0 first. Showing as the following:
+
+```{r}
+knitr::kable(head(floodData1$hourQ,6))
+```
+
+### initValue
+the initValue includes the initial condition of hour-model, showing as the following:
+
+```{r}
+knitr::kable(initialValue)
+```
+
+# Function Introduction
+## check_basinData(basinData)
+### Parameter
+- basinData: the integrated basinData(list)
+### feature
+this function may help you check the integrity of your basinData, including the following checking item:
+- whether the discharge data, preciptation data and the evapotraspiration data are corresponded to the start and end date.
+- whether the discharge data, preciptation data and the evapotraspiration data are sequential.
+- whether the discharge data, preciptation data and the evapotraspiration data have NA.
+- whether the number of sub-basin is consistent in everywhere.
+
+## dXAJ(dayModelParameter,basinInfo,dayData)
+### Parameter
+- dayModelParamter: the day-model parameter.
+- basinInfo: the basin information including the sub-basin area-weight value ,the number of sub-river-reach and the area of the basin.
+- dayData: the day data list of the basin.
+### Feature
+this function is used to simluate the day discharge of the basin, which output may including the following:
+- dayResult: the dayResult is used for initializing the flood-model.
+- resultData: the resultData includes the preciptation data, calculated discharge data, measured discharge data and the corresponding date, showing as the following:
+
+```{r}
+knitr::kable(head(resultData,6))
+```
+
+## initHourData(dayStart,floodData)
+### Parameter
+- dayStart: the start date of the flood.
+- floodData: the integrated flood data.
+### Feature
+this function is used for providing the initValue of flood-model from the day-model output(dayResult). The return output is floodData.
+
+
+## hXAJ(hourModelParameter,basinInfo,floodData)
+### Parameter
+- hourModelParameter: the flood-model parameter.
+- basinInfo: the basin information, same as the dXAJ.
+- floodData: the hour data list of the basin.
+### Feature
+this function is used to simluate the flood discharge of the basin, which output may including the following:
+- floodResult: the floodResult inculdes the preciptation data, calculated discharge data, measured discharge data and the corresponding date, showing as the following:
+
+## changeModelParameter(parameterValue,paraIndex,value)
+### Parameter
+- parameterValue: the numeric vector of the parameter, which is correspended with the parameter name vector,parameterName<-c("KC","UM","LM","C","WM","B","IM","SM","EX","KG","KI","CI","CG","CS","L","KE","XE").
+- paraIndex: the parameter name(string) which will be modified.
+- value: them parameter value(numeric) which will be modified.
+### Feature
+this function is used for change the paramter value of day-model or flood-model. The return variable is parameterValue.
+
+## showResult(Date,P,Qcal,Qmea)
+### Parameter
+- Date:the Date series.
+- P: the preciptation series.
+- Qcal: the calculated discharge series.
+- Qmea: the measured discharge series.
+### Feature
+this function is used for show the simluation result with package recharts.

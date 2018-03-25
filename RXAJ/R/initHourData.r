@@ -1,8 +1,8 @@
 
-##' .. content for \description{} (no empty lines) ..
+##'  \description{}  This function provided the initial data which need by hour model. provided the initial data which need by hour model
 ##'
-##' .. content for \details{} ..
-##' @title provided the initial data which need by hour model
+##'  \details{} This function needs the input including the date of the flood start and the floodData which should be generated at the beginning.
+##' @title initHourData
 ##' @param dayStart the date of the hour-model start
 ##' @param floodData the whole flood data 
 ##' @return the new flood data

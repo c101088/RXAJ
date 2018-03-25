@@ -2,7 +2,7 @@
 % Please edit documentation in R/initHourData.r
 \name{initHourData}
 \alias{initHourData}
-\title{provided the initial data which need by hour model}
+\title{initHourData}
 \usage{
 initHourData(dayStart, floodData)
 }
@@ -15,10 +15,10 @@ initHourData(dayStart, floodData)
 the new flood data
 }
 \description{
-.. content for \description{} (no empty lines) ..
+\description{}  This function provided the initial data which need by hour model. provided the initial data which need by hour model
 }
 \details{
-.. content for \details{} ..
+\details{} This function needs the input including the date of the flood start and the floodData which should be generated at the beginning.
 }
 \author{
 CHEN Longzan

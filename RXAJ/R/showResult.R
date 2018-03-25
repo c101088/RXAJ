@@ -1,8 +1,8 @@
 # library(recharts)
-##' .. content for \description{} (no empty lines) ..
+##' \description{} This function is used for showing the simulation in chart
 ##'
-##' .. content for \details{} ..
-##' @title this function is used for showing the simulation in chart
+##' \details{} you may use this function to call the recharts to drawing the plot.
+##' @title showResult
 ##' @param Date the date series
 ##' @param P the precipitation series
 ##' @param Qcal the calculated discharge series
@@ -24,16 +24,14 @@ showResult<-function(Date,P,Qcal,Qmea){
         type ="value",
         name="discharge(m3·s-1)",
         splitNumber="5",
-        min = "0",
-        max ="1000"
+        min = "0"
       ),
       list(
         type = "value",
         name = "precipitation(mm)",
         inverse="true",
         splitNumber ="5",
-        min ="0",
-        max = "250"
+        min ="0"
       )
       
     )

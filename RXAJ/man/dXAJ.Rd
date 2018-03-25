@@ -2,25 +2,25 @@
 % Please edit documentation in R/dXAJ.R
 \name{dXAJ}
 \alias{dXAJ}
-\title{day model of XAJ}
+\title{The day model of XAJ}
 \usage{
-dXAJ(modelParameter, basinInfo, basinData)
+dXAJ(dayModelParameter, basinInfo, dayData)
 }
 \arguments{
-\item{modelParameter}{the model parameter series which corresponded to the parameter name series}
+\item{dayModelParameter}{the model parameter series which corresponded to the parameter name series}
 
 \item{basinInfo}{the basin information}
 
-\item{basinData}{the day model data series}
+\item{dayData}{the day model data series}
 }
 \value{
 resultData which including date,precipitation,calculated discharge,measured discharge
 }
 \description{
-.. content for \description{} (no empty lines) ..
+\description{} The Day model of XINANJIANG hydrology model
 }
 \details{
-.. content for \details{} ..
+\details{} This function is the entrance of day-model, you may use it directly.
 }
 \author{
 CHEN Longzan

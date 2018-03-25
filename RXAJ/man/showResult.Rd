@@ -2,7 +2,7 @@
 % Please edit documentation in R/showResult.R
 \name{showResult}
 \alias{showResult}
-\title{this function is used for showing the simulation in chart}
+\title{showResult}
 \usage{
 showResult(Date, P, Qcal, Qmea)
 }
@@ -19,10 +19,10 @@ showResult(Date, P, Qcal, Qmea)
 a chart object which will be showed in Plots windows
 }
 \description{
-.. content for \description{} (no empty lines) ..
+\description{} This function is used for showing the simulation in chart
 }
 \details{
-.. content for \details{} ..
+\details{} you may use this function to call the recharts to drawing the plot.
 }
 \author{
 CHEN Longzan

@@ -166,7 +166,7 @@ RcppExport SEXP hXAJc(SEXP modelParameter1,SEXP basinInfo1,SEXP basinData1) {
     
   }
   
-  
+  printf("*****the loop is over!!*****\n");
   Rcpp::List resultData = Rcpp::List::create(Rcpp::Named("outP") = outP,
                                              Rcpp::Named("stationQcal") = stationQcal);
 
