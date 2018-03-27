@@ -21,3 +21,6 @@ purl("E:\\RXAJ\\RXAJ\\vignettes\\RXAJ_User_Manual.Rmd")
 resultData<-dXAJ(dayModelParameter =hhData[[1]]$dayParameterValue,basinInfo = hhData[[2]],dayData = hhData[[3]])
 showResult(resultData$Date,resultData$P,resultData$Qcal,resultData$Qmea)
 resultData<-hXAJ(hourModelParameter = hhData[[1]]$hourParameterValue,basinInfo = hhData[[2]],floodData = floodData3)
+
+
+install_github("c101088/RXAJ/RXAJ")
