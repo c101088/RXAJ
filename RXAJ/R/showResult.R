@@ -1,5 +1,14 @@
 # library(recharts)
-
+##' \description{} This function is used for showing the simulation in chart
+##'
+##' \details{} you may use this function to call the recharts to drawing the plot.
+##' @title showResult
+##' @param Date the date series
+##' @param P the precipitation series
+##' @param Qcal the calculated discharge series
+##' @param Qmea the measured discharge series
+##' @return a chart object which will be showed in Plots windows
+##' @author CHEN Longzan
 showResult<-function(Date,P,Qcal,Qmea){
   
   ext<-list(
@@ -13,18 +22,16 @@ showResult<-function(Date,P,Qcal,Qmea){
     yAxis=list(
       list(
         type ="value",
-        name="流量(m3·s-1)",
+        name="discharge(m3·s-1)",
         splitNumber="5",
-        min = "0",
-        max ="1000"
+        min = "0"
       ),
       list(
         type = "value",
-        name = "降雨量(mm)",
+        name = "precipitation(mm)",
         inverse="true",
         splitNumber ="5",
-        min ="0",
-        max = "250"
+        min ="0"
       )
       
     )
@@ -59,14 +66,29 @@ showResult<-function(Date,P,Qcal,Qmea){
   
   ePlot(series,ext)
 }
-
+##' .. content for \description{} (no empty lines) ..
+##'
+##' .. content for \details{} ..
+##' @title This function is used for calculating the Nash-Sutcliffe efficiency coefficient
+##' @param Qcal the calculated discharge
+##' @param Qmea the measured discharge
+##' @return the Nash-Sutcliffe efficiency coefficient
+##' @author CHEN Longzan
 NSE<-function(Qcal,Qmea){
   
   return(1-sum((Qmea-Qcal)^2)/sum((Qmea-mean(Qmea))^2))
   
   
 }
-
+##' .. content for \description{} (no empty lines) ..
+##'
+##' .. content for \details{} ..
+##' @title change the model parameter
+##' @param parameterValue the parameter value series which corresponded to the parameter name series
+##' @param paraIndex the name of parameter which will be modified
+##' @param value the new value of parameter which will be modified
+##' @return the new parameter series
+##' @author CHEN　Longzan
 changeModelParameter<-function(parameterValue,paraIndex,value){
   parameterName<-c("KC","UM","LM","C","WM","B","IM","SM","EX","KG","KI","CI","CG","CS","L","KE","XE")
   funFlag = FALSE
@@ -89,7 +111,7 @@ changeModelParameter<-function(parameterValue,paraIndex,value){
     
   }
   if(funFlag ==FALSE){
-    stop("The paraIndex is not correct,please check the uppercase!")
+  stop("dThe paraInt correct,please check the uppercase!")
     
   }
   return(parameterValue)

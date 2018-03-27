@@ -5,19 +5,41 @@
 
 using namespace Rcpp;
 
-// rcpp_hello_world
-List rcpp_hello_world();
-RcppExport SEXP _RXAJ_rcpp_hello_world() {
+// dXAJc
+RcppExport SEXP dXAJc(SEXP modelParameter1, SEXP basinInfo1, SEXP basinData1);
+RcppExport SEXP _RXAJ_dXAJc(SEXP modelParameter1SEXP, SEXP basinInfo1SEXP, SEXP basinData1SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpp_hello_world());
+    Rcpp::traits::input_parameter< SEXP >::type modelParameter1(modelParameter1SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type basinInfo1(basinInfo1SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type basinData1(basinData1SEXP);
+    rcpp_result_gen = Rcpp::wrap(dXAJc(modelParameter1, basinInfo1, basinData1));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hXAJc
+RcppExport SEXP hXAJc(SEXP modelParameter1, SEXP basinInfo1, SEXP basinData1);
+RcppExport SEXP _RXAJ_hXAJc(SEXP modelParameter1SEXP, SEXP basinInfo1SEXP, SEXP basinData1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type modelParameter1(modelParameter1SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type basinInfo1(basinInfo1SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type basinData1(basinData1SEXP);
+    rcpp_result_gen = Rcpp::wrap(hXAJc(modelParameter1, basinInfo1, basinData1));
     return rcpp_result_gen;
 END_RCPP
 }
 
+RcppExport SEXP dXAJc(SEXP, SEXP, SEXP);
+RcppExport SEXP hXAJc(SEXP, SEXP, SEXP);
+
 static const R_CallMethodDef CallEntries[] = {
-    {"_RXAJ_rcpp_hello_world", (DL_FUNC) &_RXAJ_rcpp_hello_world, 0},
+    {"_RXAJ_dXAJc", (DL_FUNC) &_RXAJ_dXAJc, 3},
+    {"_RXAJ_hXAJc", (DL_FUNC) &_RXAJ_hXAJc, 3},
+    {"dXAJc",       (DL_FUNC) &dXAJc,       3},
+    {"hXAJc",       (DL_FUNC) &hXAJc,       3},
     {NULL, NULL, 0}
 };
 
