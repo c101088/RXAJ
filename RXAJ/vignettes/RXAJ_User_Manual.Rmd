@@ -71,8 +71,10 @@ knitr::kable(initialValue)
 
 ## floodData(list)
 the floodData is nearly similar as the dayData, including timeStart,timeEnd,hourE,hourP,hourQ,initValue.
+
 ### hourStart and hourEnd
 the hourStart is the start time of the flood-model while the hourEnd means the end time of the flood-model.A simple example is "2018-01-01 08:00:00".
+
 ### hourE
 the hourE includes the whole basin evapotranspiration value and the  corresponding date.Showing as the following:
 
@@ -102,9 +104,12 @@ knitr::kable(initialValue)
 ```
 
 # Function Introduction
+
 ## check_basinData(basinData)
+
 ### Parameter
 - basinData: the integrated basinData(list)
+
 ### feature
 this function may help you check the integrity of your basinData, including the following checking item:
 - whether the discharge data, preciptation data and the evapotraspiration data are corresponded to the start and end date.
@@ -113,10 +118,12 @@ this function may help you check the integrity of your basinData, including the 
 - whether the number of sub-basin is consistent in everywhere.
 
 ## dXAJ(dayModelParameter,basinInfo,dayData)
+
 ### Parameter
 - dayModelParamter: the day-model parameter.
 - basinInfo: the basin information including the sub-basin area-weight value ,the number of sub-river-reach and the area of the basin.
 - dayData: the day data list of the basin.
+
 ### Feature
 this function is used to simluate the day discharge of the basin, which output may including the following:
 - dayResult: the dayResult is used for initializing the flood-model.
@@ -127,35 +134,43 @@ knitr::kable(head(resultData,6))
 ```
 
 ## initHourData(dayStart,floodData)
+
 ### Parameter
 - dayStart: the start date of the flood.
 - floodData: the integrated flood data.
+
 ### Feature
 this function is used for providing the initValue of flood-model from the day-model output(dayResult). The return output is floodData.
 
 
 ## hXAJ(hourModelParameter,basinInfo,floodData)
+
 ### Parameter
 - hourModelParameter: the flood-model parameter.
 - basinInfo: the basin information, same as the dXAJ.
 - floodData: the hour data list of the basin.
+
 ### Feature
 this function is used to simluate the flood discharge of the basin, which output may including the following:
 - floodResult: the floodResult inculdes the preciptation data, calculated discharge data, measured discharge data and the corresponding date, showing as the following:
 
 ## changeModelParameter(parameterValue,paraIndex,value)
+
 ### Parameter
 - parameterValue: the numeric vector of the parameter, which is correspended with the parameter name vector,parameterName<-c("KC","UM","LM","C","WM","B","IM","SM","EX","KG","KI","CI","CG","CS","L","KE","XE").
 - paraIndex: the parameter name(string) which will be modified.
-- value: them parameter value(numeric) which will be modified.
+- value: the parameter new value(numeric) .
+
 ### Feature
 this function is used for change the paramter value of day-model or flood-model. The return variable is parameterValue.
 
 ## showResult(Date,P,Qcal,Qmea)
+
 ### Parameter
 - Date:the Date series.
 - P: the preciptation series.
 - Qcal: the calculated discharge series.
 - Qmea: the measured discharge series.
+
 ### Feature
 this function is used for show the simluation result with package recharts.
